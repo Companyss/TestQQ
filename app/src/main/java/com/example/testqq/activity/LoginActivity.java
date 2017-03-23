@@ -111,8 +111,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 startLogin();
                 break;
             case R.id.login_register_button:
-                // 点击跳转注册页
-               // Splik(LoginActivity.this,new Intent(LoginActivity.this,));
+              Splik(LoginActivity.this,new Intent(LoginActivity.this,RegisterActivity.class));
                 break;
         }
     }
