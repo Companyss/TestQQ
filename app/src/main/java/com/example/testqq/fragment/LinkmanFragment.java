@@ -3,11 +3,17 @@ package com.example.testqq.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.testqq.R;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+
+import java.security.acl.Group;
+import java.util.List;
 
 /**
  * 联系人列表页
@@ -16,6 +22,8 @@ import com.example.testqq.R;
 
 public class LinkmanFragment extends Fragment {
     private View view;
+    private RecyclerView recyclerView;
+    private List<EMClient>  list;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -28,5 +36,12 @@ public class LinkmanFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+    private void init(){
+        recyclerView= (RecyclerView) view.findViewById(R.id.linkman_recycler_view);
+    }
+    private void add(){
+        //参数为要添加的好友的username和添加理由
+    //    EMClient.getInstance().contactManager().addContact(, "");
     }
 }
