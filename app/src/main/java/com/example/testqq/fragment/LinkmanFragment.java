@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import com.example.testqq.R;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.exceptions.HyphenateException;
 
 import java.security.acl.Group;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ import java.util.List;
 public class LinkmanFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
-    private List<EMClient>  list;
+    private List<String>  list;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,9 +41,12 @@ public class LinkmanFragment extends Fragment {
     }
     private void init(){
         recyclerView= (RecyclerView) view.findViewById(R.id.linkman_recycler_view);
+        list=new ArrayList<String>();
+        try {
+           list = EMClient.getInstance().contactManager().getAllContactsFromServer();
+        } catch (HyphenateException e) {
+            e.printStackTrace();
+        }
     }
-    private void add(){
-        //参数为要添加的好友的username和添加理由
-    //    EMClient.getInstance().contactManager().addContact(, "");
-    }
+
 }

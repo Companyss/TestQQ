@@ -23,7 +23,8 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run() {
                 //判断之前是否登录过
-                if (EMClient.getInstance().isLoggedInBefore()) {
+                if (false){
+            //    if (EMClient.getInstance().isLoggedInBefore()) {
                     //拿到开始执行的时间
                     long startTime = new Date().getTime();
                     EMClient.getInstance().chatManager().loadAllConversations();
@@ -36,7 +37,7 @@ public class SplashActivity extends BaseActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Splik(SplashActivity.this, new Intent(SplashActivity.this, LoginActivity.class));
+                    Splik(SplashActivity.this, new Intent(SplashActivity.this, HomepageActivity.class));
 
                 } else {
                     //如果之前没有登录过就停留2秒跳转到注册页面
@@ -45,10 +46,10 @@ public class SplashActivity extends BaseActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Splik(SplashActivity.this, new Intent(SplashActivity.this, RegisterActivity.class));
+                    Splik(SplashActivity.this, new Intent(SplashActivity.this, LoginActivity.class));
                 }
             }
-        });
+        }).start();
 
     }
 
