@@ -63,7 +63,7 @@ public class BaseActivity extends AppCompatActivity {
                 str="密码为空！";
                 break;
             case 3:
-                str="账号密码匹配";
+                str="账号密码不匹配";
                 break;
             case 4:
                 str="2次密码不一致！";
