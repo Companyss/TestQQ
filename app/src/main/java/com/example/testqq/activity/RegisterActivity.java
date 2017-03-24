@@ -75,7 +75,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 str = "密码不一致";
                 break;
             default:
-                str = "账号活密码不符合规定";
+                str = "账号密码不符合规定";
                 break;
         }
     }

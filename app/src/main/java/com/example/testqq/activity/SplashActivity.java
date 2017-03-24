@@ -48,7 +48,7 @@ public class SplashActivity extends BaseActivity {
                     Splik(SplashActivity.this, new Intent(SplashActivity.this, RegisterActivity.class));
                 }
             }
-        });
+        }).start();
 
     }
 
