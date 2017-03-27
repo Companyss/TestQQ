@@ -7,5 +7,17 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="CustomDialog" parent="Theme.AppCompat.Dialog">
+        <!-- 背景的明暗-->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 背景透明度-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+
+
 
 </resources>

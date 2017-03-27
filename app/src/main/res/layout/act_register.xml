@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="账号："
+            android:text="          账号："
             android:textSize="20dp" />
 
         <EditText
@@ -35,7 +35,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="密码："
+            android:text="          密码："
             android:textSize="20dp" />
 
         <EditText
@@ -69,32 +69,33 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <Button
             android:id="@+id/zhuce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="44dp"
+            android:layout_marginStart="80dp"
             android:layout_weight="1"
-            android:background="@color/colorWhite"
+            android:background="@drawable/login_btn_bg"
             android:text="注册"
             android:textColor="@color/colorblue"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="11dp" />
 
         <Button
             android:id="@+id/quxiaozuce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="70dp"
             android:layout_weight="1"
-            android:background="@color/colorWhite"
+            android:background="@drawable/login_btn_bg"
             android:text="取消注册"
             android:textColor="@color/colorblue"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/zhuce"
+            android:layout_alignStart="@+id/zhuce" />
     </RelativeLayout>
 </LinearLayout>

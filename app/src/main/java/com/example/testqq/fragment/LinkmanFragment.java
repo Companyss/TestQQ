@@ -42,7 +42,8 @@ public class LinkmanFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         try {
-            EMClient.getInstance().contactManager().addContact("tomyi", "888");
+
+            EMClient.getInstance().contactManager().addContact("888", "888");
             EMClient.getInstance().contactManager().addContact("999", "tomyi");
         } catch (HyphenateException e) {
             e.printStackTrace();
@@ -53,11 +54,19 @@ public class LinkmanFragment extends Fragment {
     private void init(){
         listView= (ListView) view.findViewById(R.id.linkman_list_view);
         list=new ArrayList<String>();
-        try {
-           list = EMClient.getInstance().contactManager().getAllContactsFromServer();
-        } catch (HyphenateException e) {
-            e.printStackTrace();
-        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    list = EMClient.getInstance().contactManager().getAllContactsFromServer();
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
         listView.setAdapter(new LinkmanAdapter(getActivity(),list));
     }
 

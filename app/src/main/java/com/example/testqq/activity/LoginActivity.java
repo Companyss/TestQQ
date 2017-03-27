@@ -1,15 +1,19 @@
 package com.example.testqq.activity;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceGroup;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.testqq.R;
+import com.example.testqq.vules.MyDialog;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
@@ -20,13 +24,16 @@ import com.hyphenate.chat.EMClient;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private EditText account, password;
-    private Button loginbtn, registerbtn;
+    private Button loginbtn;
+            private TextView registerbtn;
+    private MyDialog g;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initialize();
+
     }
 
     /**
@@ -36,7 +43,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         account = (EditText) findViewById(R.id.login_account_edit_text);
         password = (EditText) findViewById(R.id.login_password_edit_text);
         loginbtn = (Button) findViewById(R.id.login_login_button);
-        registerbtn = (Button) findViewById(R.id.login_register_button);
+        registerbtn = (TextView) findViewById(R.id.login_register_button);
         loginbtn.setOnClickListener(this);
         registerbtn.setOnClickListener(this);
 
@@ -52,6 +59,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         switch (reCde) {
             case 0:
                 login(stracc, strpass);
+                 g=new MyDialog(this,R.style.CustomDialog);
+                g.show();
                 break;
             default:
                 errToast(reCde);
@@ -73,6 +82,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 //跳转到主页
                 Splik(LoginActivity.this,new Intent(LoginActivity.this,HomepageActivity.class));
                 toastShow(LoginActivity.this,"登录聊天服务器成功！");
+                g.cancel();
+
             }
             @Override
             public void onProgress(int progress, String status) {
@@ -81,6 +92,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void onError(int code, String message) {
                toastShow(LoginActivity.this,"登录聊天服务器失败！");
+                g.cancel();
             }
         });
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.testqq.R;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 
 import java.util.Date;
 import java.util.List;

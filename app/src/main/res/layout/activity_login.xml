@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorWhite">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -61,24 +62,41 @@
             android:id="@+id/login_login_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/login_password_layout"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/login_marginTop_ten"
-            android:orientation="horizontal">
+            android:layout_marginTop="18dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/login_login_button"
+            android:layout_alignParentStart="true">
 
-            <Button
-                android:id="@+id/login_login_button"
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/login_marginLeft_eighty"
-                android:text="@string/login"
-                android:textSize="@dimen/text_size_eighteen" />
+                android:text="已阅读用户协议"
+                android:textColor="@color/colorblu"
+                android:layout_marginLeft="20dp"
+                android:textSize="@dimen/text_size_eighteen"/>
 
-            <Button
+            <TextView
+                android:background="@drawable/register_btn_bg"
                 android:id="@+id/login_register_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/register" />
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:text="@string/register"
+                android:textSize="@dimen/text_size_eighteen"
+                 android:layout_marginLeft="90dp"
+                android:gravity="center"
+                android:textColor="@color/colorblue"/>
         </LinearLayout>
+
+        <Button
+            android:background="@drawable/login_btn_bg"
+            android:id="@+id/login_login_button"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/login_marginLeft_eighty"
+            android:text="@string/login"
+            android:textSize="@dimen/text_size_eighteen"
+            android:layout_marginTop="12dp"
+            android:layout_below="@+id/login_password_layout"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 </LinearLayout>
