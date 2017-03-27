@@ -25,7 +25,7 @@ import java.util.List;
 public class HomepageActivity extends BaseActivity implements View.OnClickListener {
     private ViewPager viewPager;  //viewPager控件
     private InformationFragment informationFragment;  //消息列表Fragment对象
-    private LinkmanFragment linkmanFragment;    //联系人列表Fragment对象
+    private LinkmanFragment  linkmanFragment;    //联系人列表Fragment对象
     private SettingUpFragment settingUpFragment; //设置页的Fragment对象
     private FragmentManager fragmentManager;   //Fragment的管理器对象
     private List<Fragment> list = new ArrayList<Fragment>();//数据源泛型为Fragment
