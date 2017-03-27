@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-  <ListView
-      android:id="@+id/linkman_list_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/item_linkman_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:minHeight="20dp"/>
 
-  </ListView>
 </LinearLayout>
