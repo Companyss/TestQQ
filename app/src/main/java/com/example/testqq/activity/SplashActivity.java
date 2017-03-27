@@ -23,8 +23,8 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run() {
                 //判断之前是否登录过
-                if (false){
-            //    if (EMClient.getInstance().isLoggedInBefore()) {
+
+              if (EMClient.getInstance().isLoggedInBefore()) {
                     //拿到开始执行的时间
                     long startTime = new Date().getTime();
                     EMClient.getInstance().chatManager().loadAllConversations();

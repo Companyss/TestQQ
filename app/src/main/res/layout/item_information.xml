@@ -13,14 +13,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="name"
-            android:textSize="18sp" />
+            android:textSize="@dimen/text_size_eighteen" />
 
         <TextView
             android:id="@+id/item_information_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="message"
-            android:textSize="18sp" />
+            android:textSize="@dimen/text_size_eighteen" />
 
     </LinearLayout>
 

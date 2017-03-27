@@ -9,9 +9,12 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.testqq.R;
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +26,7 @@ public class InformationAdapter extends BaseAdapter {
     private Context context;
     private List<EMConversation> list;
     private Long timeMessage;
+
     public InformationAdapter(Context context, List<EMConversation> list) {
         this.context = context;
         this.list = list;
@@ -46,6 +50,7 @@ public class InformationAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder=null;
+
         //获取回话的Item
         EMConversation item = (EMConversation) getItem(position);
 
@@ -64,9 +69,11 @@ public class InformationAdapter extends BaseAdapter {
         }
         //获取对应item的用户名
         String userName = item.getUserName();
+        DateFormat dateFormat = new SimpleDateFormat("MM—dd HH:mm");
 
+        viewHolder.time.setText(dateFormat.format(item.getLastMessage().getMsgTime()));
         //将消息最后的显示时间赋值
-        viewHolder.time.setText(getTimeMessage(item)+"");
+       // viewHolder.time.setText();
         //赋值给textview
         viewHolder.name.setText(userName);
         //定义一个接收消息的字符串
@@ -84,6 +91,15 @@ public class InformationAdapter extends BaseAdapter {
     public void upData(List<EMConversation> list){
         this.list=list;
         this.notifyDataSetChanged();
+    }
+    public void romev(int i){
+        EMConversation emCon = list.get(i);
+        EMClient.getInstance()
+                .chatManager()
+                .deleteConversation(emCon.getUserName(), true);
+        list.remove(i);
+        this.notifyDataSetChanged();
+
     }
     class ViewHolder{
         TextView name,message,time;
@@ -112,6 +128,7 @@ public class InformationAdapter extends BaseAdapter {
                 return "刚刚";
         }
     }
+
     /**
      *  定义时间的换算方法
      */

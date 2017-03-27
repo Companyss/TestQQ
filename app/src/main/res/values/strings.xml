@@ -10,4 +10,6 @@
     <string name="account">账号：</string>
     <string name="password">密码：</string>
     <string name="send">发送</string>
+    <string name="no_message">没有消息</string>
+    <string name="quit_login">退出登录</string>
 </resources>

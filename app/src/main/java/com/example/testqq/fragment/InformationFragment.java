@@ -1,5 +1,7 @@
 package com.example.testqq.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.testqq.R;
@@ -40,9 +43,9 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     private View view;
     private List<EMConversation> list;
     private EditText message, account;
-    private Button send, edxt;
+    private Button send;
     private InformationAdapter adapter;
-
+   private TextView tv;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         initialize();
         setListView();
         getMessage();
+        ad();
     }
 
     @Override
@@ -71,20 +75,26 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         listView = (ListView) view.findViewById(R.id.information_list_view);
         message = (EditText) view.findViewById(R.id.main_message);
         account = (EditText) view.findViewById(R.id.main_account);
-        edxt = (Button) view.findViewById(R.id.main_exit);
+        tv= (TextView) view.findViewById(R.id.information_text_view);
         send = (Button) view.findViewById(R.id.main_send);
 
         //设置监听
         send.setOnClickListener(this);
-        edxt.setOnClickListener(this);
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
         list = new ArrayList<EMConversation>();
     }
+private void ad(){
+    if (list.size()==0){
+        listView.setEmptyView(tv);
+    }else {
+        tv.setVisibility(View.GONE);
+    }
 
+}
     private void setListView() {
         List<EMConversation> data = getData();
-            adapter = new InformationAdapter(getActivity(), data);
+        adapter = new InformationAdapter(getActivity(), data);
         listView.setAdapter(adapter);
 
     }
@@ -103,10 +113,6 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.main_exit://点击退出
-                //退出环信服务器，再次启动程序需要重新登录
-                EMClient.getInstance().logout(true);
-                break;
             case R.id.main_send://点击发送
                 //调用发送文本消息方法
                 sendMessage();
@@ -117,21 +123,36 @@ public class InformationFragment extends Fragment implements View.OnClickListene
                 break;
         }
     }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), PrivateMessageActivity.class);
-        EMConversation emc= (EMConversation) adapter.getItem(position);
-        intent.putExtra("ursename",emc.getUserName());
+        EMConversation emc = (EMConversation) adapter.getItem(position);
+        intent.putExtra("ursename", emc.getUserName());
         startActivity(intent);
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-        return false;
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        final AlertDialog.Builder ad = new AlertDialog.Builder(getActivity());
+        ad.setTitle("是否删除会话");
+        ad.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    Toast.makeText(getActivity(), "已删除", Toast.LENGTH_SHORT).show();
+                    adapter.romev(position);
+                } catch (Exception e) {
+                         e.printStackTrace();
+                }
+            }
+        });
+        ad.setNegativeButton("取消", null);
+        ad.show();
+        return true;
     }
-//发送消息
+
+    //发送消息
     private void sendMessage() {
         String messageStr = message.getText().toString();
         String accountStr = account.getText().toString();
@@ -153,7 +174,8 @@ public class InformationFragment extends Fragment implements View.OnClickListene
             }
         });
     }
-  //发送失败
+
+    //发送失败
     @Override
     public void onError(int i, String s) {
         getActivity().runOnUiThread(new Runnable() {
@@ -163,7 +185,8 @@ public class InformationFragment extends Fragment implements View.OnClickListene
             }
         });
     }
- //发送成功
+
+    //发送成功
     @Override
     public void onProgress(int i, String s) {
 
@@ -180,7 +203,8 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         EMClient.getInstance().chatManager().removeMessageListener(getMessagetListener());
 
     }
-     //监听消息的listener
+
+    //监听消息的listener
     private EMMessageListener getMessagetListener() {
         EMMessageListener messageListener = new EMMessageListener() {
             @Override
@@ -190,7 +214,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void run() {
 
-                      //adapter.upData(messages);
+                        //adapter.upData(messages);
                     }
                 });
 
@@ -218,24 +242,25 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         };
         return messageListener;
     }
+
     //排序
-    private void paixu(){
+    private void paixu() {
         //集合排序依据接口   给list集合排序的方法
-        Comparator com=new Comparator() {
+        Comparator com = new Comparator() {
             @Override
             public int compare(Object o1, Object o2) {
                 //转换类型， 直接指定泛型不需要强转
-                EMConversation p1=(EMConversation)o1;
-                EMConversation p2=(EMConversation)o2;
-                if (p1.getLastMessage().getMsgTime()<p2.getLastMessage().getMsgTime())
+                EMConversation p1 = (EMConversation) o1;
+                EMConversation p2 = (EMConversation) o2;
+                if (p1.getLastMessage().getMsgTime() < p2.getLastMessage().getMsgTime())
                     return 1;
-                else if (p1.getLastMessage().getMsgTime()==p2.getLastMessage().getMsgTime())
+                else if (p1.getLastMessage().getMsgTime() == p2.getLastMessage().getMsgTime())
                     return 0;
-                else if (p1.getLastMessage().getMsgTime()>p2.getLastMessage().getMsgTime())
+                else if (p1.getLastMessage().getMsgTime() > p2.getLastMessage().getMsgTime())
                     return -1;
                 return 0;
             }
         };
-        Collections.sort(list,com);
+        Collections.sort(list, com);
     }
 }

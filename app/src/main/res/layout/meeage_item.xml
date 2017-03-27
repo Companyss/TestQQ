@@ -45,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
+                android:textColor="@color/colorblue"
                 android:text="显示好友的用户名"/>
 
             <TextView
@@ -83,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:text="显示本人的用户名"
-                />
+                android:textColor="@color/colorPrimary"/>
 
             <TextView
                 android:id="@+id/item_msg_right_message1"

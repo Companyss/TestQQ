@@ -6,6 +6,7 @@
         android:id="@+id/item_linkman_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:minHeight="20dp"/>
+        android:minHeight="20dp"
+        android:text="name"/>
 
 </LinearLayout>
