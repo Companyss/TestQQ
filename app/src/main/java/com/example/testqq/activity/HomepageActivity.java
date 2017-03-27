@@ -28,7 +28,7 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
     private final static int ZERO = 0;
     private ViewPager viewPager;  //viewPager控件
     private InformationFragment informationFragment;  //消息列表Fragment对象
-    private LinkmanFragment  linkmanFragment;    //联系人列表Fragment对象
+    private LinkmanFragment linkmanFragment;    //联系人列表Fragment对象
     private SettingUpFragment settingUpFragment; //设置页的Fragment对象
     private FragmentManager fragmentManager;   //Fragment的管理器对象
     private List<Fragment> list = new ArrayList<Fragment>();//数据源泛型为Fragment
@@ -96,7 +96,7 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             //点击跳转消息列表页
             case R.id.homepage_information_button:
-               viewPager.setCurrentItem(ZERO);
+                viewPager.setCurrentItem(ZERO);
                 break;
             //点击跳转联系人列表页
             case R.id.homepage_linkman_button:
