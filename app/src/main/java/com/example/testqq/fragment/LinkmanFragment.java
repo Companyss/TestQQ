@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.testqq.R;
+import com.example.testqq.adapter.LinkmanAdapter;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.exceptions.HyphenateException;
@@ -24,7 +27,7 @@ import java.util.List;
 
 public class LinkmanFragment extends Fragment {
     private View view;
-    private RecyclerView recyclerView;
+    private ListView listView;
     private List<String>  list;
     @Nullable
     @Override
@@ -38,15 +41,24 @@ public class LinkmanFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        try {
+            EMClient.getInstance().contactManager().addContact("tomyi", "888");
+            EMClient.getInstance().contactManager().addContact("999", "tomyi");
+        } catch (HyphenateException e) {
+            e.printStackTrace();
+            Log.e("asd","没有添加");
+        }
+        init();
     }
     private void init(){
-        recyclerView= (RecyclerView) view.findViewById(R.id.linkman_recycler_view);
+        listView= (ListView) view.findViewById(R.id.linkman_list_view);
         list=new ArrayList<String>();
         try {
            list = EMClient.getInstance().contactManager().getAllContactsFromServer();
         } catch (HyphenateException e) {
             e.printStackTrace();
         }
+        listView.setAdapter(new LinkmanAdapter(getActivity(),list));
     }
 
 }

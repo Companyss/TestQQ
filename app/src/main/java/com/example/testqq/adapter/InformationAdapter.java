@@ -80,6 +80,10 @@ public class InformationAdapter extends BaseAdapter {
         viewHolder.message.setText(ss);
         return convertView;
     }
+    public void upData(List<EMConversation> list){
+        this.list=list;
+        this.notifyDataSetChanged();
+    }
     class ViewHolder{
         TextView name,message,time;
 

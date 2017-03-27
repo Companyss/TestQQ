@@ -23,6 +23,9 @@ import java.util.List;
  */
 
 public class HomepageActivity extends BaseActivity implements View.OnClickListener {
+    private final static int ONE = 1;
+    private final static int TWO = 2;
+    private final static int ZERO = 0;
     private ViewPager viewPager;  //viewPager控件
     private InformationFragment informationFragment;  //消息列表Fragment对象
     private LinkmanFragment linkmanFragment;    //联系人列表Fragment对象
@@ -93,15 +96,15 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             //点击跳转消息列表页
             case R.id.homepage_information_button:
-               viewPager.setCurrentItem(0);
+               viewPager.setCurrentItem(ZERO);
                 break;
             //点击跳转联系人列表页
             case R.id.homepage_linkman_button:
-                viewPager.setCurrentItem(1);
+                viewPager.setCurrentItem(ONE);
                 break;
             //点击跳转设置页
             case R.id.homepage_setting_up_button:
-                viewPager.setCurrentItem(2);
+                viewPager.setCurrentItem(TWO);
                 break;
         }
     }

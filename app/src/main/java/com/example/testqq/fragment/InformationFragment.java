@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.testqq.R;
 import com.example.testqq.adapter.InformationAdapter;
 import com.hyphenate.EMCallBack;
+import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
@@ -31,18 +32,19 @@ import java.util.Map;
  */
 
 public class InformationFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, EMCallBack {
-    private ListView  listView;
+    private ListView listView;
     private View view;
     private List<EMConversation> list;
-    private EditText message,account;
-    private Button send,edxt;
+    private EditText message, account;
+    private Button send, edxt;
     private InformationAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       super.onCreateView(inflater, container, savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
         //加载消息列表的布局文件     并将其返回
-        view=inflater.inflate(R.layout.fragment_infromation,container,false);
+        view = inflater.inflate(R.layout.fragment_infromation, container, false);
         return view;
     }
 
@@ -50,36 +52,38 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initialize();
-       setListView();
+        setListView();
+        getMessage();
     }
+
     //初始化
-  private void initialize(){
-      listView= (ListView) view.findViewById(R.id.information_list_view);
-      message= (EditText) view.findViewById(R.id.main_message);
-      account= (EditText) view.findViewById(R.id.main_account);
-      edxt= (Button) view.findViewById(R.id.main_exit);
-      send= (Button) view.findViewById(R.id.main_send);
+    private void initialize() {
+        listView = (ListView) view.findViewById(R.id.information_list_view);
+        message = (EditText) view.findViewById(R.id.main_message);
+        account = (EditText) view.findViewById(R.id.main_account);
+        edxt = (Button) view.findViewById(R.id.main_exit);
+        send = (Button) view.findViewById(R.id.main_send);
 
-      //设置监听
-      send.setOnClickListener(this);
-      edxt.setOnClickListener(this);
-      listView.setOnItemClickListener(this);
-      listView.setOnItemLongClickListener(this);
-      list=new ArrayList<EMConversation>() ;
-  }
+        //设置监听
+        send.setOnClickListener(this);
+        edxt.setOnClickListener(this);
+        listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
+        list = new ArrayList<EMConversation>();
+    }
 
-    private void setListView(){
+    private void setListView() {
         List<EMConversation> data = getData();
-         adapter=new InformationAdapter(getActivity(),data);
+        adapter = new InformationAdapter(getActivity(), data);
         listView.setAdapter(adapter);
 
     }
 
-   //查询会话的数据
-    private List<EMConversation> getData(){
-        Map<String,EMConversation> conversationMap= EMClient.getInstance()
+    //查询会话的数据
+    private List<EMConversation> getData() {
+        Map<String, EMConversation> conversationMap = EMClient.getInstance()
                 .chatManager().getAllConversations();
-        for (EMConversation emConversation:conversationMap.values()){
+        for (EMConversation emConversation : conversationMap.values()) {
             list.add(emConversation);
         }
         return list;
@@ -95,7 +99,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.main_send://点击发送
                 //调用发送文本消息方法
-                 sendMessage();
+                sendMessage();
                 break;
         }
     }
@@ -109,7 +113,8 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         return false;
     }
-    private void sendMessage(){
+
+    private void sendMessage() {
         String messageStr = message.getText().toString();
         String accountStr = account.getText().toString();
 //创建一条文本消息，content为消息文字内容，toChatUsername为对方用户或者群聊的id，后文皆是如此
@@ -125,7 +130,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getActivity(),"消息发送成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "消息发送成功", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -136,7 +141,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getActivity(),"消息发送失败！",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "消息发送失败！", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -144,5 +149,54 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     @Override
     public void onProgress(int i, String s) {
 
+    }
+
+    //注册消息监听来接收消息
+    public void getMessage() {
+        EMClient.getInstance().chatManager().addMessageListener(getMessagetListener());
+
+    }
+
+    //移除listener
+    public void romeMessageListener() {
+        EMClient.getInstance().chatManager().removeMessageListener(getMessagetListener());
+
+    }
+
+    private EMMessageListener getMessagetListener() {
+        EMMessageListener messageListener = new EMMessageListener() {
+            @Override
+            public void onMessageReceived(List<EMMessage> messages) {
+                //收到消息
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                      adapter.upData(list);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCmdMessageReceived(List<EMMessage> messages) {
+                //收到透传消息
+            }
+
+            @Override
+            public void onMessageReadAckReceived(List<EMMessage> list) {
+                //收到已读回执
+            }
+
+            @Override
+            public void onMessageDeliveryAckReceived(List<EMMessage> list) {
+                //收到已送达回执
+            }
+
+            @Override
+            public void onMessageChanged(EMMessage message, Object change) {
+                //消息状态变动
+            }
+        };
+        return messageListener;
     }
 }
