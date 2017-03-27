@@ -96,7 +96,7 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             //点击跳转消息列表页
             case R.id.homepage_information_button:
-               viewPager.setCurrentItem(ZERO);
+                viewPager.setCurrentItem(ZERO);
                 break;
             //点击跳转联系人列表页
             case R.id.homepage_linkman_button:
