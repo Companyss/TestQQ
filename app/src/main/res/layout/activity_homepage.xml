@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
     <android.support.v4.view.ViewPager
         android:id="@+id/homepage_viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="7" >
-        <FrameLayout
-            android:id="@+id/homepage_frameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+        android:layout_height="467dp">
+
     </android.support.v4.view.ViewPager>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1">
+       >
         <Button
             android:id="@+id/homepage_information_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
             android:text="@string/information_footer"
-            android:layout_weight="1"
             android:background="@color/colorWhite"/>
         <Button
             android:id="@+id/homepage_linkman_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
             android:text="@string/linkman_footer"
-            android:layout_weight="1"
             android:background="@color/colorWhite"/>
         <Button
             android:id="@+id/homepage_setting_up_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
             android:text="@string/setting_up_footer"
-            android:layout_weight="1"
-            android:background="@color/colorWhite"/>
+            android:background="@color/colorWhite"
+            />
 
     </LinearLayout>
-
-</LinearLayout>
+    </LinearLayout>
+    <fragment
+        android:background="@color/colorWhite"
+        android:id="@+id/ss"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:name="com.example.testqq.fragment.PersonageFragment"
+        tools:layout="@layout/fragment_personage" />
+</android.support.v4.widget.DrawerLayout>

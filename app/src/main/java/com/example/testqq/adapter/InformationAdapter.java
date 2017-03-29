@@ -74,10 +74,12 @@ public class InformationAdapter extends BaseAdapter {
         //获取对应item的用户名
         String userName = item.getUserName();
         DateFormat dateFormat = new SimpleDateFormat("MM—dd HH:mm");
+if (item.getLastMessage()!=null){
+
 
         viewHolder.time.setText(dateFormat.format(item.getLastMessage().getMsgTime()));
         //将消息最后的显示时间赋值
-       // viewHolder.time.setText();
+     //  viewHolder.time.setText(getTimeMessage((EMConversation) getItem(position)));
         //赋值给textview
         viewHolder.name.setText(userName);
         //定义一个接收消息的字符串
@@ -90,6 +92,7 @@ public class InformationAdapter extends BaseAdapter {
         }
         //将消息赋值给Textview
         viewHolder.message.setText(ss);
+}
         viewHolder.rmove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

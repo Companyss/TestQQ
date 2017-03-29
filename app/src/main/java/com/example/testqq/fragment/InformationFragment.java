@@ -228,13 +228,13 @@ private void upDate(){
     private EMMessageListener getMessagetListener() {
         EMMessageListener messageListener = new EMMessageListener() {
             @Override
-            public void onMessageReceived(final List<EMMessage> messages) {
+            public void onMessageReceived(final List<EMMessage> messages1) {
                 //收到消息
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        //adapter.upData(messages);
+                      //  adapter.upData(messages1);
                     }
                 });
 
@@ -281,6 +281,11 @@ private void upDate(){
                 return 0;
             }
         };
-        Collections.sort(list, com);
+        try {
+            Collections.sort(list, com);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 }

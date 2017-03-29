@@ -93,6 +93,10 @@ public class PrivateMessageAdapter extends BaseAdapter{
         }
 
     }
+    public void upData(List<EMMessage> list){
+        this.list=list;
+        this.notifyDataSetChanged();
+    }
     class ViewHorder{
         private LinearLayout timeLoy;
         private RelativeLayout liftLoy,rightLoy;

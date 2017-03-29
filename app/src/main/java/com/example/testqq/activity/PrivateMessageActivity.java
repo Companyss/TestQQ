@@ -35,7 +35,9 @@ public class PrivateMessageActivity extends  BaseActivity implements EMCallBack,
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_private_message);
+        //收到消息监听
         EMClient.getInstance().chatManager().addMessageListener(this);
+       // EMClient.getInstance().chatManager().addMessageListener(msgListener);
         init();
         initView();
     }
@@ -134,7 +136,7 @@ private void initView(){
 
     @Override
     public void onMessageReceived(List<EMMessage> list) {
-
+        mesageAdapter.upData(list);
     }
 
     @Override

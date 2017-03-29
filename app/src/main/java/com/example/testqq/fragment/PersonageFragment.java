@@ -20,14 +20,12 @@ import java.util.List;
  */
 
 public class PersonageFragment extends Fragment{
-    private View view;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         //加载联系列表的布局文件    并将其返回
-        view=inflater.inflate(R.layout.fragment_personage,container,false);
-        return view;
+        return inflater.inflate(R.layout.fragment_personage,null);
     }
 
     @Override
