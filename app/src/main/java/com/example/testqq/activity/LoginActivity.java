@@ -9,11 +9,13 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.testqq.R;
 import com.example.testqq.vules.MyDialog;
+import com.example.testqq.vules.SPUtils;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
@@ -27,6 +29,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private Button loginbtn;
             private TextView registerbtn;
     private MyDialog g;
+    private CheckBox remember_box,protocol_box;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,9 +47,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         password = (EditText) findViewById(R.id.login_password_edit_text);
         loginbtn = (Button) findViewById(R.id.login_login_button);
         registerbtn = (TextView) findViewById(R.id.login_register_button);
+        remember_box= (CheckBox) findViewById(R.id.login_remember_box);
+        protocol_box= (CheckBox) findViewById(R.id.login_protocol_box);
         loginbtn.setOnClickListener(this);
         registerbtn.setOnClickListener(this);
+        //进度提示框
+         g=new MyDialog(this,R.style.CustomDialog);
 
+        account.setText( SPUtils.getlastLoginUserName(this));
+        password.setText(SPUtils.getlastLoginPassword(this));
+        //设置光标的位置在字符串的最后一位
+         account.setSelection(account.getText().toString().length());
     }
 
     /**
@@ -59,14 +70,23 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         switch (reCde) {
             case 0:
                 login(stracc, strpass);
-                 g=new MyDialog(this,R.style.CustomDialog);
                 g.show();
                 break;
             default:
                 errToast(reCde);
                 break;
         }
+        SPUtils.setLastLoginUsername(this,stracc);
+        SPUtils.setLastLoginPassword(this,strpass);
     }
+    //必须点击同意才可以登录
+ private void protocol(){
+     if (protocol_box.isChecked()==true){
+         startLogin();
+     }else {
+         toastShow(this,"请阅读用户协议后点击同意");
+     }
+ }
 
     /**
      * 登录方法
@@ -120,7 +140,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.login_login_button:
-                startLogin();
+                protocol();
                 break;
             case R.id.login_register_button:
               Splik(LoginActivity.this,new Intent(LoginActivity.this,RegisterActivity.class));

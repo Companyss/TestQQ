@@ -19,6 +19,14 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_splash);
+        intentToNext();
+    }
+
+    @Override
+    public void onBackPressed() {
+    }
+
+    private void intentToNext() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -26,31 +34,30 @@ public class SplashActivity extends BaseActivity {
 
               if (EMClient.getInstance().isLoggedInBefore()) {
                     //拿到开始执行的时间
-                    long startTime = new Date().getTime();
+                    long startTime = System.currentTimeMillis();
                     EMClient.getInstance().chatManager().loadAllConversations();
                     EMClient.getInstance().groupManager().loadAllGroups();
                     //执行到当前行的时间-开始时间得到加载时间=消耗时间
-                    long time = new Date().getTime() - startTime;
-                    //如果之前登录过就停留 (2000 - time) 秒跳转到登录页面
+                    long time =  System.currentTimeMillis() - startTime;
+                    //如果之前登录过就停留 (2000 - time) 秒跳转到主页面
                     try {
                         Thread.sleep(2000 - time);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     Splik(SplashActivity.this, new Intent(SplashActivity.this, HomepageActivity.class));
-
+                     finish();
                 } else {
-                    //如果之前没有登录过就停留2秒跳转到注册页面
+                    //如果之前没有登录过就停留2秒跳转到登录页面
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     Splik(SplashActivity.this, new Intent(SplashActivity.this, LoginActivity.class));
+                  finish();
                 }
             }
         }).start();
-
     }
-
 }

@@ -4,9 +4,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +41,7 @@ import java.util.Map;
  * Created by 宋宝春 on 2017/3/22.
  */
 
-public class InformationFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, EMCallBack {
+public class InformationFragment extends Fragment implements View.OnClickListener,AdapterView.OnItemLongClickListener, EMCallBack {
     private ListView listView;
     private View view;
     private List<EMConversation> list;
@@ -46,6 +49,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     private Button send;
     private InformationAdapter adapter;
    private TextView tv;
+    private SwipeRefreshLayout swipeRefreshLayout;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
         setListView();
         getMessage();
         ad();
+        upDate();
     }
 
     @Override
@@ -73,6 +78,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     //初始化
     private void initialize() {
         listView = (ListView) view.findViewById(R.id.information_list_view);
+        swipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.information_swipe_refresh_layout);
         message = (EditText) view.findViewById(R.id.main_message);
         account = (EditText) view.findViewById(R.id.main_account);
         tv= (TextView) view.findViewById(R.id.information_text_view);
@@ -80,7 +86,6 @@ public class InformationFragment extends Fragment implements View.OnClickListene
 
         //设置监听
         send.setOnClickListener(this);
-        listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
         list = new ArrayList<EMConversation>();
     }
@@ -101,6 +106,7 @@ private void ad(){
 
     //查询会话的数据
     private List<EMConversation> getData() {
+        list.clear();
         Map<String, EMConversation> conversationMap = EMClient.getInstance()
                 .chatManager().getAllConversations();
         for (EMConversation emConversation : conversationMap.values()) {
@@ -118,19 +124,29 @@ private void ad(){
                 sendMessage();
                 List<EMConversation> data = getData();
                 adapter.upData(data);
-                account.setText(" ");
-                message.setText(" ");
+                account.setText("");
+                message.setText("");
                 break;
         }
     }
+private void upDate(){
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+     @Override
+     public void onRefresh() {
+        new  Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<EMConversation> data = getData();
+                adapter.upData(data);
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(getActivity(), "数据已更新", Toast.LENGTH_SHORT).show();
+            }
+        },1000);
+     }
+ });
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getActivity(), PrivateMessageActivity.class);
-        EMConversation emc = (EMConversation) adapter.getItem(position);
-        intent.putExtra("ursename", emc.getUserName());
-        startActivity(intent);
-    }
+}
+
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -156,12 +172,16 @@ private void ad(){
     private void sendMessage() {
         String messageStr = message.getText().toString();
         String accountStr = account.getText().toString();
-//创建一条文本消息，content为消息文字内容，toChatUsername为对方用户或者群聊的id，后文皆是如此
-        EMMessage message = EMMessage.createTxtSendMessage(messageStr, accountStr);
-        message.setMessageStatusCallback(this);
-//发送消息
-        EMClient.getInstance().chatManager().sendMessage(message);
 
+//创建一条文本消息，content为消息文字内容，toChatUsername为对方用户或者群聊的id，后文皆是如此
+        if (TextUtils.isEmpty(messageStr)) {
+            Toast.makeText(getActivity(), "消息内容为空了！", Toast.LENGTH_SHORT).show();
+        }else {
+            EMMessage message = EMMessage.createTxtSendMessage(messageStr, accountStr);
+            message.setMessageStatusCallback(this);
+            //发送消息
+            EMClient.getInstance().chatManager().sendMessage(message);
+        }
     }
 
     @Override

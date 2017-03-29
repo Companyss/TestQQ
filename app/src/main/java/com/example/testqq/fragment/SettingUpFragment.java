@@ -1,5 +1,6 @@
 package com.example.testqq.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.testqq.R;
+import com.example.testqq.activity.LoginActivity;
 import com.hyphenate.chat.EMClient;
 
 /**
@@ -44,6 +46,8 @@ public class SettingUpFragment extends Fragment implements View.OnClickListener 
             case R.id.setting_quit_login_button:
                 //退出环信服务器，再次启动程序需要重新登录
                 EMClient.getInstance().logout(true);
+                Intent intent=new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
                 break;
         }
     }

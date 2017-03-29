@@ -27,9 +27,9 @@ public class MyDialog extends ProgressDialog{
         setCanceledOnTouchOutside(false);
         setContentView(R.layout.login_dialog);
         WindowManager.LayoutParams arr=getWindow().getAttributes();
-        int window=arr.height=WindowManager.LayoutParams.WRAP_CONTENT;
+        arr.height=WindowManager.LayoutParams.WRAP_CONTENT;
         arr.alpha=0.8f;
-        int hige=arr.width=WindowManager.LayoutParams.WRAP_CONTENT;
+        arr.width=WindowManager.LayoutParams.WRAP_CONTENT;
         getWindow().setAttributes(arr);
     }
 }

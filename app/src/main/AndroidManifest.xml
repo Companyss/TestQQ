@@ -40,7 +40,6 @@
         <activity android:name=".activity.RegisterActivity"/>
         <activity android:name=".activity.PrivateMessageActivity"/>
 
-
         <!-- 设置环信应用的AppKey -->
         <meta-data
             android:name="EASEMOB_APPKEY"

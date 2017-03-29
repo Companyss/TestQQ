@@ -1,14 +1,17 @@
 package com.example.testqq.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.testqq.R;
+import com.example.testqq.activity.PrivateMessageActivity;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
@@ -48,7 +51,7 @@ public class InformationAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder=null;
 
         //获取回话的Item
@@ -59,6 +62,7 @@ public class InformationAdapter extends BaseAdapter {
             convertView=View.inflate(context, R.layout.item_information,null);
             viewHolder= new ViewHolder();
             //初始化控件
+            viewHolder.rmove= (Button) convertView.findViewById(R.id.item_information_remove_button);
             viewHolder.name= (TextView) convertView.findViewById(R.id.item_information_name);
             viewHolder.message= (TextView) convertView.findViewById(R.id.item_information_message);
             viewHolder.time= (TextView) convertView.findViewById(R.id.item_information_time);
@@ -86,6 +90,22 @@ public class InformationAdapter extends BaseAdapter {
         }
         //将消息赋值给Textview
         viewHolder.message.setText(ss);
+        viewHolder.rmove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                romev(position);
+            }
+        });
+    viewHolder.message.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(context, PrivateMessageActivity.class);
+            EMConversation emc = (EMConversation) getItem(position);
+            intent.putExtra("ursename", emc.getUserName());
+            context.startActivity(intent);
+        }
+    });
+
         return convertView;
     }
     public void upData(List<EMConversation> list){
@@ -103,7 +123,7 @@ public class InformationAdapter extends BaseAdapter {
     }
     class ViewHolder{
         TextView name,message,time;
-
+        Button rmove;
     }
 
     private String getTimeMessage(EMConversation item) {
