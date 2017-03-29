@@ -1,6 +1,8 @@
 package com.example.testqq.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.testqq.R;
 import com.example.testqq.adapter.LinkmanAdapter;
@@ -25,10 +30,16 @@ import java.util.List;
  * Created by 宋宝春 on 2017/3/22.
  */
 
-public class LinkmanFragment extends Fragment {
+public class LinkmanFragment extends Fragment implements View.OnClickListener {
     private View view;
     private ListView listView;
     private List<String>  list;
+    private EditText name,message;
+    private Button addbtn;
+    private String  strmess,strname;
+    private List<String>  newlist=new ArrayList<>();
+    private Handler hander;
+    private LinkmanAdapter linkmanAdapter;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,33 +52,71 @@ public class LinkmanFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        init();
+     //   add();
+      //  getFriend();
+       // listView.setAdapter(new LinkmanAdapter(getActivity(),list));
+    }
+    private void add(){
         try {
-
-            EMClient.getInstance().contactManager().addContact("888", "888");
-            EMClient.getInstance().contactManager().addContact("999", "tomyi");
+            EMClient.getInstance().contactManager().addContact(strname, strmess);
         } catch (HyphenateException e) {
             e.printStackTrace();
-            Log.e("asd","没有添加");
         }
-        init();
+        message.setVisibility(View.GONE);
+        name.setVisibility(View.GONE);
     }
     private void init(){
         listView= (ListView) view.findViewById(R.id.linkman_list_view);
+        name= (EditText) view.findViewById(R.id.linkman_name);
+        message= (EditText) view.findViewById(R.id.linkman_message);
+        addbtn= (Button) view.findViewById(R.id.linkman_add_button);
+         linkmanAdapter = new LinkmanAdapter(getActivity(), newlist);
         list=new ArrayList<String>();
-        getActivity().runOnUiThread(new Runnable() {
+        addbtn.setOnClickListener(this);
+//        hander=new Handler(){
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                if (msg.what==1){
+//                    listView.setAdapter(linkmanAdapter);
+//                }
+//            }
+//        };
+        listView.setAdapter(linkmanAdapter);
+
+    }
+
+    private void getFriend() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
 
                     list = EMClient.getInstance().contactManager().getAllContactsFromServer();
+                    if (list!=null) {
+                        newlist.addAll(list);
+                    }
+
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }
+                hander.sendEmptyMessage(1);
             }
-        });
+        }).start();
+
+        }
 
 
-        listView.setAdapter(new LinkmanAdapter(getActivity(),list));
+
+    @Override
+    public void onClick(View v) {
+        message.setVisibility(View.VISIBLE);
+        name.setVisibility(View.VISIBLE);
+        strmess  = message.getText().toString();
+        strname = name.getText().toString();
+        newlist.add(strname);
+       linkmanAdapter.upData(newlist);
+
     }
-
 }

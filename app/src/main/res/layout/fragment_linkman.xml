@@ -2,6 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+  <EditText
+      android:id="@+id/linkman_name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="好友的ID"
+      android:visibility="gone"/>
+  <EditText
+      android:id="@+id/linkman_message"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="添加的原因"
+      android:visibility="gone"/>
+  <Button
+      android:id="@+id/linkman_add_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="添加好友"/>
   <ListView
       android:id="@+id/linkman_list_view"
       android:layout_width="match_parent"

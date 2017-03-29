@@ -1,6 +1,8 @@
 package com.example.testqq.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.testqq.R;
+import com.example.testqq.adapter.InformationAdapter;
 import com.example.testqq.adapter.PrivateMessageAdapter;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
@@ -159,15 +162,20 @@ private void initView(){
 
     }
 
+
     @Override
     public void onClick(View v) {
         String edtext = getEdtext(editText);
         try {
+
             sendMessage(edtext);
+            mesageAdapter.upData(list);
+            sendBroadcast(new Intent("send"));
         } catch (Exception e) {
             e.printStackTrace();
             toastShow(this, "请输入消息内容");
         }
         editText.setText("");
     }
+
 }

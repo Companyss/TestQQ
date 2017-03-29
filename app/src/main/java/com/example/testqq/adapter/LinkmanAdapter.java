@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.testqq.R;
 import com.example.testqq.activity.BaseActivity;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 
 import java.util.List;
 
@@ -52,10 +53,14 @@ public class LinkmanAdapter extends BaseAdapter {
         }else {
             myHolder= (MyHolder) convertView.getTag();
         }
-        EMConversation emConversation= (EMConversation) getItem(position);
-        String userName = emConversation.getUserName();
-        myHolder.name.setText(userName);
+
+        myHolder.name.setText(list.get(position));
+
         return convertView;
+    }
+    public void upData(List<String> list){
+        this.list=list;
+        this.notifyDataSetChanged();
     }
     class MyHolder{
         TextView name;

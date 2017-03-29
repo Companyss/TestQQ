@@ -1,8 +1,11 @@
 package com.example.testqq.fragment;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -50,6 +53,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     private InformationAdapter adapter;
    private TextView tv;
     private SwipeRefreshLayout swipeRefreshLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -62,11 +66,13 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getActivity().registerReceiver(new MyB(),new IntentFilter("send"));
         initialize();
         setListView();
         getMessage();
         ad();
         upDate();
+
     }
 
     @Override
@@ -126,6 +132,7 @@ private void ad(){
                 adapter.upData(data);
                 account.setText("");
                 message.setText("");
+
                 break;
         }
     }
@@ -183,7 +190,7 @@ private void upDate(){
             EMClient.getInstance().chatManager().sendMessage(message);
         }
     }
-
+    //发送成功
     @Override
     public void onSuccess() {
         getActivity().runOnUiThread(new Runnable() {
@@ -206,7 +213,7 @@ private void upDate(){
         });
     }
 
-    //发送成功
+
     @Override
     public void onProgress(int i, String s) {
 
@@ -234,7 +241,7 @@ private void upDate(){
                     @Override
                     public void run() {
 
-                      //  adapter.upData(messages1);
+
                     }
                 });
 
@@ -287,5 +294,12 @@ private void upDate(){
             e.printStackTrace();
         }
     }
+  class  MyB extends BroadcastReceiver{
 
+      @Override
+      public void onReceive(Context context, Intent intent) {
+          List<EMConversation> data = getData();
+          adapter.upData(data);
+      }
+  }
 }
