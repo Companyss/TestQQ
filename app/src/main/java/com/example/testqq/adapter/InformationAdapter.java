@@ -79,8 +79,9 @@ if (item.getLastMessage()!=null){
 
         viewHolder.time.setText(dateFormat.format(item.getLastMessage().getMsgTime()));
         //将消息最后的显示时间赋值
-     //  viewHolder.time.setText(getTimeMessage((EMConversation) getItem(position)));
-        //赋值给textview
+     //
+    //   viewHolder.time.setText(getTimeMessage((EMConversation) getItem(position)));
+        //赋值给textview，，
         viewHolder.name.setText(userName);
         //定义一个接收消息的字符串
         String ss;

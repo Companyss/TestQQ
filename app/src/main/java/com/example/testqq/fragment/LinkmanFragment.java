@@ -1,5 +1,6 @@
 package com.example.testqq.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,9 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.testqq.R;
+import com.example.testqq.activity.FoundGroupActivity;
+import com.example.testqq.activity.GroupActivity;
 import com.example.testqq.adapter.LinkmanAdapter;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
@@ -35,7 +39,7 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener {
     private ListView listView;
     private List<String>  list;
     private EditText name,message;
-    private Button addbtn;
+    private Button addbtn,addfroupbtn,grouplist;
     private String  strmess,strname;
     private List<String>  newlist=new ArrayList<>();
     private Handler hander;
@@ -53,9 +57,9 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         init();
-     //   add();
-      //  getFriend();
-       // listView.setAdapter(new LinkmanAdapter(getActivity(),list));
+        add();
+        getFriend();
+        listView.setAdapter(new LinkmanAdapter(getActivity(),list));
     }
     private void add(){
         try {
@@ -71,18 +75,22 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener {
         name= (EditText) view.findViewById(R.id.linkman_name);
         message= (EditText) view.findViewById(R.id.linkman_message);
         addbtn= (Button) view.findViewById(R.id.linkman_add_button);
+        addfroupbtn= (Button) view.findViewById(R.id.linkman_found_group_button);
+        grouplist= (Button) view.findViewById(R.id.linkman_group_list);
          linkmanAdapter = new LinkmanAdapter(getActivity(), newlist);
         list=new ArrayList<String>();
         addbtn.setOnClickListener(this);
-//        hander=new Handler(){
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//                if (msg.what==1){
-//                    listView.setAdapter(linkmanAdapter);
-//                }
-//            }
-//        };
+        addfroupbtn.setOnClickListener(this);
+        grouplist.setOnClickListener(this);
+        hander=new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what==1){
+                    listView.setAdapter(linkmanAdapter);
+                }
+            }
+        };
         listView.setAdapter(linkmanAdapter);
 
     }
@@ -111,12 +119,28 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.linkman_add_button:
+                addFriend();
+                break;
+            case R.id.linkman_found_group_button:
+                Intent intent=new Intent(getActivity(),FoundGroupActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.linkman_group_list:
+                Intent intent1=new Intent(getActivity(),GroupActivity.class);
+                startActivity(intent1);
+                break;
+        }
+
+    }
+
+    private void addFriend() {
         message.setVisibility(View.VISIBLE);
         name.setVisibility(View.VISIBLE);
         strmess  = message.getText().toString();
         strname = name.getText().toString();
         newlist.add(strname);
-       linkmanAdapter.upData(newlist);
-
+        linkmanAdapter.upData(newlist);
     }
 }

@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.testqq.R;
+import com.example.testqq.vules.SPUtils;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 
@@ -31,7 +32,6 @@ public class PrivateMessageAdapter extends BaseAdapter{
         this.list = list;
     }
 
-    private  static  final  String MYUSERNAME="123";
     @Override
     public int getCount() {
         return list.size();
@@ -71,7 +71,7 @@ public class PrivateMessageAdapter extends BaseAdapter{
         DateFormat dateFormat = new SimpleDateFormat("MM—dd HH:mm");
         viewHolder.time.setText(dateFormat.format(emMessage.getMsgTime()));
         //判断消息是否从这发出
-        if (MYUSERNAME.equals(emMessage.getFrom())){
+        if (getname().equals(emMessage.getFrom())){
             //设置rightloy是否可见
             viewHolder.rightLoy.setVisibility(View.VISIBLE);
             viewHolder.liftLoy.setVisibility(View.GONE);
@@ -96,6 +96,9 @@ public class PrivateMessageAdapter extends BaseAdapter{
     public void upData(List<EMMessage> list){
         this.list=list;
         this.notifyDataSetChanged();
+    }
+    public String getname(){
+       return SPUtils.getlastLoginUserName(context);
     }
     class ViewHorder{
         private LinearLayout timeLoy;

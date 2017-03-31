@@ -140,6 +140,7 @@ private void initView(){
     @Override
     public void onMessageReceived(List<EMMessage> list) {
         mesageAdapter.upData(list);
+        this.list.addAll(list);
     }
 
     @Override
