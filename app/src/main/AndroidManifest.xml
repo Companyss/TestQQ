@@ -42,7 +42,7 @@
         <activity android:name=".activity.FoundGroupActivity"/>
         <activity android:name=".activity.GroupActivity"/>
         <activity android:name=".activity.GroupMessageActivity"/>
-
+       <activity android:name=".activity.GroupInfoActivity"/>
 
         <!-- 设置环信应用的AppKey -->
         <meta-data

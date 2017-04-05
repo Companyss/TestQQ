@@ -34,6 +34,7 @@ public class SettingUpFragment extends Fragment implements View.OnClickListener 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         init();
+
     }
     private void  init(){
         quitLogin= (Button) view.findViewById(R.id.setting_quit_login_button);

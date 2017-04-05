@@ -7,16 +7,22 @@
     app:leftSwipe="false">
 
     <RelativeLayout
+        android:id="@+id/item_information_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
+          <ImageView
+              android:id="@+id/item_information_image_view"
+              android:layout_width="50dp"
+              android:layout_height="50dp"
+              android:src="@mipmap/ic_launcher"/>
         <TextView
             android:id="@+id/item_information_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="name"
-            android:textSize="@dimen/text_size_eighteen" />
+            android:textSize="@dimen/text_size_eighteen"
+            android:layout_toRightOf="@id/item_information_image_view"/>
 
         <TextView
             android:id="@+id/item_information_message"
@@ -24,7 +30,8 @@
             android:layout_height="wrap_content"
             android:text="message"
             android:textSize="@dimen/text_size_eighteen"
-            android:layout_below="@id/item_information_name"/>
+            android:layout_below="@id/item_information_name"
+            android:layout_toRightOf="@id/item_information_image_view"/>
         <TextView
             android:id="@+id/item_information_time"
             android:layout_width="wrap_content"
@@ -33,12 +40,20 @@
             android:layout_marginRight="30dp"
             android:text="time"
             android:textSize="14sp" />
+        <TextView
+            android:id="@+id/item_information_unread"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:text="weidu"
+            android:textSize="14sp"
+            android:layout_below="@id/item_information_time"
+            />
     </RelativeLayout>
-
-
-      <Button
-          android:id="@+id/item_information_remove_button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="删除"/>
+  <Button
+      android:id="@+id/item_information_remove_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="删除"/>
 </com.mcxtzhang.swipemenulib.SwipeMenuLayout>

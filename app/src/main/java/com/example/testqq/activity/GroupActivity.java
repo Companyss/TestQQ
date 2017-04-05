@@ -1,5 +1,7 @@
 package com.example.testqq.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,19 +27,21 @@ import java.util.List;
 
 /**
  * Created by 宋宝春 on 2017/3/30.
+ * 群组列表页
  */
 
-public class GroupActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+public class GroupActivity extends BaseActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+
     private ListView listView;
     private List<EMGroup> groupList;
     private GroupListAdapter groupListAdapter;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fridegroup);
         initView();
     }
+    //初始化
     private void initView(){
         listView = (ListView) findViewById(R.id.group_listview);
         groupList=new ArrayList<>();
@@ -45,17 +49,25 @@ public class GroupActivity extends BaseActivity implements AdapterView.OnItemCli
         groupListAdapter=new GroupListAdapter(this,groupList);
         listView.setAdapter(groupListAdapter);
         listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
     }
 
 
-
+//获取
   private void getData(){
-      //从服务器获取自己加入的和创建的群组列表，此api获取的群组sdk会自动保存到内存和db。
-      try {
-          groupList = EMClient.getInstance().groupManager().getJoinedGroupsFromServer();//需异步处理
-      } catch (HyphenateException e) {
-          e.printStackTrace();
-      }
+
+
+      new Thread(new Runnable() {
+          @Override
+          public void run() {
+              try {
+                  //从服务器获取自己加入的和创建的群组列表，此api获取的群组sdk会自动保存到内存和db
+                  groupList = EMClient.getInstance().groupManager().getJoinedGroupsFromServer();//需异步处理
+              } catch (HyphenateException e) {
+                  e.printStackTrace();
+              }
+          }
+      }).start();
 
 //从本地加载群组列表
       groupList = EMClient.getInstance().groupManager().getAllGroups();
@@ -64,6 +76,7 @@ public class GroupActivity extends BaseActivity implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         EMGroup item = (EMGroup) groupListAdapter.getItem(position);
+
         intentTo(GroupMessageActivity.class,item.getGroupId());
     }
     //携带String类型的groupId的跳转
@@ -74,4 +87,39 @@ public class GroupActivity extends BaseActivity implements AdapterView.OnItemCli
 
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        EMGroup item = (EMGroup) groupListAdapter.getItem(position);
+       final String groupId = item.getGroupId();
+        AlertDialog.Builder ad=new AlertDialog.Builder(this);
+        ad.setTitle("是否解散该群");
+        ad.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dissucltion(groupId);
+               groupList.remove(position);
+                groupListAdapter.upData(groupList);
+            }
+        });
+        ad.setNegativeButton("取消",null);
+        ad.show();
+        return false;
+    }
+
+    /**
+     * 解散群组
+     */
+    private void dissucltion(final String grouid){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EMClient.getInstance().groupManager().destroyGroup(grouid);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
 }

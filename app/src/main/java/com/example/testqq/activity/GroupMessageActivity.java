@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 群消息页面
  * Created by 宋宝春 on 2017/3/30.
  */
 public class GroupMessageActivity extends BaseActivity implements EMCallBack, View.OnClickListener, EMMessageListener {

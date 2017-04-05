@@ -26,7 +26,7 @@ import java.util.List;
 public class PrivateMessageAdapter extends BaseAdapter{
     private Context context;
     private List<EMMessage> list;
-
+    private String name;
     public PrivateMessageAdapter(Context context, List<EMMessage> list) {
         this.context = context;
         this.list = list;
@@ -71,12 +71,12 @@ public class PrivateMessageAdapter extends BaseAdapter{
         DateFormat dateFormat = new SimpleDateFormat("MM—dd HH:mm");
         viewHolder.time.setText(dateFormat.format(emMessage.getMsgTime()));
         //判断消息是否从这发出
-        if (getname().equals(emMessage.getFrom())){
+        if (getname().equals(SPUtils.getlastLoginUserName(context))){
             //设置rightloy是否可见
             viewHolder.rightLoy.setVisibility(View.VISIBLE);
             viewHolder.liftLoy.setVisibility(View.GONE);
             //设置我发送的用户名
-            viewHolder.rightName.setText("我");
+            viewHolder.rightName.setText(SPUtils.getlastLoginUserName(context));
             //
             EMTextMessageBody text = (EMTextMessageBody) emMessage.getBody();
             //设置我发送的内容
@@ -93,13 +93,16 @@ public class PrivateMessageAdapter extends BaseAdapter{
         }
 
     }
+    //刷新方法
     public void upData(List<EMMessage> list){
         this.list=list;
         this.notifyDataSetChanged();
     }
+    //获取本地的name
     public String getname(){
        return SPUtils.getlastLoginUserName(context);
     }
+    //内部类
     class ViewHorder{
         private LinearLayout timeLoy;
         private RelativeLayout liftLoy,rightLoy;

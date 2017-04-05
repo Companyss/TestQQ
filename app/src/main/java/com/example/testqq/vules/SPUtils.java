@@ -21,6 +21,7 @@ public class SPUtils  {
     public static String getlastLoginUserName(Context context){
         return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(LAST_LOGIN_USERNAME,"");
     }
+
     public static void setLastLoginPassword(Context context,String ursename){
         context.getSharedPreferences(SP_PASSWORD,Context.MODE_PRIVATE)
                 .edit()

@@ -103,6 +103,7 @@ private void ad(){
     }
 
 }
+    //设置适配器
     private void setListView() {
         List<EMConversation> data = getData();
         adapter = new InformationAdapter(getActivity(), data);
@@ -136,6 +137,7 @@ private void ad(){
                 break;
         }
     }
+    //下拉刷新
 private void upDate(){
     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
      @Override
@@ -240,7 +242,6 @@ private void upDate(){
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
 
                     }
                 });

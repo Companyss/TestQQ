@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.testqq.R;
@@ -66,6 +67,7 @@ public class InformationAdapter extends BaseAdapter {
             viewHolder.name= (TextView) convertView.findViewById(R.id.item_information_name);
             viewHolder.message= (TextView) convertView.findViewById(R.id.item_information_message);
             viewHolder.time= (TextView) convertView.findViewById(R.id.item_information_time);
+            viewHolder.relativeLayout= (RelativeLayout) convertView.findViewById(R.id.item_information_relative_layout);
             //存标签
             convertView.setTag(viewHolder);
         }else {
@@ -94,22 +96,23 @@ if (item.getLastMessage()!=null){
         //将消息赋值给Textview
         viewHolder.message.setText(ss);
 }
+        //删除
         viewHolder.rmove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 romev(position);
             }
         });
-    viewHolder.message.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(context, PrivateMessageActivity.class);
-            EMConversation emc = (EMConversation) getItem(position);
-            intent.putExtra("ursename", emc.getUserName());
-            context.startActivity(intent);
-        }
-    });
 
+   viewHolder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+       @Override
+       public void onClick(View v) {
+           Intent intent = new Intent(context, PrivateMessageActivity.class);
+           EMConversation emc = (EMConversation) getItem(position);
+           intent.putExtra("ursename", emc.getUserName());
+           context.startActivity(intent);
+       }
+   });
         return convertView;
     }
     public void upData(List<EMConversation> list){
@@ -127,6 +130,7 @@ if (item.getLastMessage()!=null){
     }
     class ViewHolder{
         TextView name,message,time;
+        RelativeLayout relativeLayout;
         Button rmove;
     }
 

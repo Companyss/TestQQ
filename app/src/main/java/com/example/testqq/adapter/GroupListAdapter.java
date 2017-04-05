@@ -55,6 +55,10 @@ public class GroupListAdapter extends BaseAdapter{
         holder.groupName.setText(list.get(position).getGroupName());
         return convertView;
     }
+    public void upData(List<EMGroup> list){
+        this.list=list;
+        this.notifyDataSetChanged();
+    }
     class MyHolder{
         TextView groupName;
         //初始化控件

@@ -28,7 +28,7 @@ import java.util.List;
  * Created by 宋宝春 on 2017/3/22.
  */
 
-public class HomepageActivity extends BaseActivity implements View.OnClickListener ,EMConnectionListener{
+public class HomepageActivity extends BaseActivity implements View.OnClickListener ,EMConnectionListener, ViewPager.OnPageChangeListener {
     private final static int ONE = 1;
     private final static int TWO = 2;
     private final static int ZERO = 0;
@@ -50,6 +50,7 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         //调用初始化方法
         initialize();
         //注册一个监听连接状态的listener
+
         EMClient.getInstance().addConnectionListener(this);
     }
 
@@ -85,6 +86,8 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         informationButton.setOnClickListener(this);
         linkmanButton.setOnClickListener(this);
         settingUpButton.setOnClickListener(this);
+        viewPager.setOnPageChangeListener(this);
+        setBackgroud(ZERO);
     }
 
     /**
@@ -98,7 +101,7 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         list.add(informationFragment);
         list.add(linkmanFragment);
         list.add(settingUpFragment);
-       // list.add(g);
+
     }
 
     @Override
@@ -107,14 +110,17 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
             //点击跳转消息列表页
             case R.id.homepage_information_button:
                 viewPager.setCurrentItem(ZERO);
+                setBackgroud(viewPager.getCurrentItem());
                 break;
             //点击跳转联系人列表页
             case R.id.homepage_linkman_button:
                 viewPager.setCurrentItem(ONE);
+                setBackgroud(viewPager.getCurrentItem());
                 break;
             //点击跳转设置页
             case R.id.homepage_setting_up_button:
                 viewPager.setCurrentItem(TWO);
+                setBackgroud(viewPager.getCurrentItem());
                 break;
         }
     }
@@ -147,5 +153,42 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         });
+    }
+    /**
+     *
+     * @param i
+     * 设置按钮背景颜色
+     */
+    private void setBackgroud(int i){
+        if ( i==0) {
+            informationButton.setBackgroundResource(R.color.colorPrimary);
+            linkmanButton.setBackgroundResource(R.color.colorWhite);
+            settingUpButton.setBackgroundResource(R.color.colorWhite);
+        }
+        if (i==1)  {
+            informationButton.setBackgroundResource(R.color.colorWhite);
+            linkmanButton.setBackgroundResource(R.color.colorPrimary);
+            settingUpButton.setBackgroundResource(R.color.colorWhite);
+        }
+        if (i==2)  {
+            informationButton.setBackgroundResource(R.color.colorWhite);
+            linkmanButton.setBackgroundResource(R.color.colorWhite);
+            settingUpButton.setBackgroundResource(R.color.colorPrimary);
+        }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+          setBackgroud(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }
