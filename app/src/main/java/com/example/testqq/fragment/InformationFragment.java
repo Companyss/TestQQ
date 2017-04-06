@@ -303,4 +303,5 @@ private void upDate(){
           adapter.upData(data);
       }
   }
+
 }

@@ -40,70 +40,60 @@ import java.util.List;
  */
 
 public class LinkmanFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, AdapterView.OnItemLongClickListener {
-        private View view;
+    private View view;
     private ListView listView;
-    private List<String>  list;
-    private EditText name,message;
-    private Button addbtn,addfroupbtn,grouplist;
-    private String  strmess,strname;
-    private List<String>  newlist=new ArrayList<>();
+    private List<String> list;
+    private EditText name, message;
+    private Button addbtn, addfroupbtn, grouplist;
+    private String strmess, strname;
+    private List<String> newlist = new ArrayList<>();
     private Handler hander;
     private LinkmanAdapter linkmanAdapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         //加载联系列表的布局文件    并将其返回
-        view=inflater.inflate(R.layout.fragment_linkman,container,false);
+        view = inflater.inflate(R.layout.fragment_linkman, container, false);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        EMClient.getInstance().contactManager().setContactListener(getEMContactListener());
         init();
+        getFriend();
         message.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
-        getFriend();
         //注册好友状态监听
-        EMClient.getInstance().contactManager().setContactListener(getEMContactListener());
     }
 
     /**
      * 初始化数据
      */
-    private void init(){
-        listView= (ListView) view.findViewById(R.id.linkman_list_view);
-        name= (EditText) view.findViewById(R.id.linkman_name);
-        message= (EditText) view.findViewById(R.id.linkman_message);
-        addbtn= (Button) view.findViewById(R.id.linkman_add_button);
-        addfroupbtn= (Button) view.findViewById(R.id.linkman_found_group_button);
-        grouplist= (Button) view.findViewById(R.id.linkman_group_list);
-         linkmanAdapter = new LinkmanAdapter(getActivity(), newlist);
-        list=new ArrayList<String>();
+    private void init() {
+        listView = (ListView) view.findViewById(R.id.linkman_list_view);
+        name = (EditText) view.findViewById(R.id.linkman_name);
+        message = (EditText) view.findViewById(R.id.linkman_message);
+        addbtn = (Button) view.findViewById(R.id.linkman_add_button);
+        addfroupbtn = (Button) view.findViewById(R.id.linkman_found_group_button);
+        grouplist = (Button) view.findViewById(R.id.linkman_group_list);
         addbtn.setOnClickListener(this);
         addbtn.setOnLongClickListener(this);
         addfroupbtn.setOnClickListener(this);
         grouplist.setOnClickListener(this);
-        hander=new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what==1){
-                    listView.setAdapter(new LinkmanAdapter(getActivity(),newlist));
-                }
-            }
-        };
         listView.setOnItemLongClickListener(this);
-
     }
 
     /**
      * 添加好友
      */
-    private void add1(){
+
+    private void add1() {
         try {
-            strmess  = message.getText().toString();
+            strmess = message.getText().toString();
             strname = name.getText().toString();
             //同意好友请求
             EMClient.getInstance().contactManager().acceptInvitation(strname);
@@ -123,43 +113,49 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener, V
             @Override
             public void run() {
                 try {
-                   //获取好友列表 获取好友的 username list，开发者需要根据 username 去自己服务器获取好友的详情。
+                    //获取好友列表 获取好友的 username list，开发者需要根据 username 去自己服务器获取好友的详情。
                     list = EMClient.getInstance().contactManager().getAllContactsFromServer();
-                    if (list!=null) {
+                    if (list != null) {
                         newlist.addAll(list);
                     }
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }
+                linkmanAdapter = new LinkmanAdapter(getActivity(), newlist);
                 hander.sendEmptyMessage(1);
             }
         }).start();
-
-        }
+        hander = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 1) {
+                    listView.setAdapter(linkmanAdapter);
+                }
+            }
+        };
+    }
 
 
     /**
      * 点击事件
+     *
      * @param v
      */
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.linkman_add_button:
-                try {
-                  strname.equals("");
-                }catch (Exception e){
-                    Toast.makeText(getActivity(),"用户名为空",Toast.LENGTH_SHORT).show();
-                }
+
                 add1();
                 UpDataFriend();
                 break;
             case R.id.linkman_found_group_button:
-                Intent intent=new Intent(getActivity(),FoundGroupActivity.class);
+                Intent intent = new Intent(getActivity(), FoundGroupActivity.class);
                 startActivity(intent);
                 break;
             case R.id.linkman_group_list:
-                Intent intent1=new Intent(getActivity(),GroupActivity.class);
+                Intent intent1 = new Intent(getActivity(), GroupActivity.class);
                 startActivity(intent1);
                 break;
         }
@@ -171,20 +167,16 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener, V
      */
     private void UpDataFriend() {
         newlist.add(strname);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                linkmanAdapter.upData(newlist);
-            }
-        });
+        linkmanAdapter.upData(newlist);
     }
 
     /**
      * 好友状态监听
+     *
      * @return
      */
-    private EMContactListener getEMContactListener(){
-        EMContactListener emContactListener=new EMContactListener() {
+    private EMContactListener getEMContactListener() {
+        EMContactListener emContactListener = new EMContactListener() {
             @Override
             public void onContactAdded(String s) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -217,11 +209,12 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener, V
 
             }
         };
-                return emContactListener;
+        return emContactListener;
     }
 
     /**
      * 长按监听
+     *
      * @param v
      * @return
      */
@@ -233,29 +226,32 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener, V
     }
 
 
-    private void delete(int i){
-        try {
-            EMClient.getInstance().contactManager().deleteContact(newlist.get(i));
-        } catch (HyphenateException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-        AlertDialog.Builder a=new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
         a.setTitle("是否删除好友");
         a.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                delete(position);
-                newlist.remove(position);
-                        linkmanAdapter.upData(newlist);
-        }
+                try {
+                    EMClient.getInstance().contactManager().deleteContact(newlist.get(position));
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+                remove1(position);
+            }
         });
-        a.setNegativeButton("取消",null);
+        a.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
         a.show();
         return false;
+    }
+
+    private void remove1(int i) {
+        newlist.remove(i);
+        linkmanAdapter.upData(newlist);
     }
 }

@@ -45,25 +45,25 @@ public class LinkmanAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MyHolder myHolder;
-        if (convertView==null){
-            convertView= LayoutInflater.from(context).inflate(R.layout.item_linkman,parent,false);
-           myHolder=new MyHolder();
-            myHolder.name= (TextView) convertView.findViewById(R.id.item_linkman_name);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_linkman, parent, false);
+            myHolder = new MyHolder();
+            myHolder.name = (TextView) convertView.findViewById(R.id.item_linkman_name);
             convertView.setTag(myHolder);
-        }else {
-            myHolder= (MyHolder) convertView.getTag();
+        } else {
+            myHolder = (MyHolder) convertView.getTag();
         }
 
         myHolder.name.setText(list.get(position));
-
         return convertView;
     }
-    public void upData(List<String> list){
-        this.list=list;
-        this.notifyDataSetChanged();
+
+    public void upData(List<String> list) {
+        this.list = list;
+        notifyDataSetChanged();
     }
 
-    class MyHolder{
+    class MyHolder {
         TextView name;
 
     }

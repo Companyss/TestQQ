@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,7 @@ public class PrivateMessageActivity extends  BaseActivity implements EMCallBack,
     private String urseName;
     private  String groupId;
     private PrivateMessageAdapter mesageAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,7 @@ public class PrivateMessageActivity extends  BaseActivity implements EMCallBack,
        // EMClient.getInstance().chatManager().addMessageListener(msgListener);
         init();
         initView();
+        load();
     }
 
     @Override
@@ -56,7 +59,7 @@ public class PrivateMessageActivity extends  BaseActivity implements EMCallBack,
       listView= (ListView) findViewById(R.id.private_message_listview);
       sendbtn= (Button) findViewById(R.id.private_message_sendbtn);
       editText= (EditText) findViewById(R.id.private_message_edtext);
-
+        swipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.private_message_swipe_refresh_layout);
       urseName=getIntent().getStringExtra("ursename");
       groupId=getIntent().getStringExtra("groupId");
       sendbtn.setOnClickListener(this);
@@ -66,7 +69,20 @@ private void initView(){
     mesageAdapter=new PrivateMessageAdapter(this,list);
     listView.setAdapter(mesageAdapter);
 }
-
+public void load(){
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    initView();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            },1000);
+        }
+    });
+}
 
     private void sendMessage(String strmessage){
         EMMessage message;

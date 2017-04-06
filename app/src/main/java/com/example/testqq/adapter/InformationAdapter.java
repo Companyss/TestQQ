@@ -30,6 +30,7 @@ public class InformationAdapter extends BaseAdapter {
     private Context context;
     private List<EMConversation> list;
     private Long timeMessage;
+    private  String userName,ss;
 
     public InformationAdapter(Context context, List<EMConversation> list) {
         this.context = context;
@@ -68,13 +69,14 @@ public class InformationAdapter extends BaseAdapter {
             viewHolder.message= (TextView) convertView.findViewById(R.id.item_information_message);
             viewHolder.time= (TextView) convertView.findViewById(R.id.item_information_time);
             viewHolder.relativeLayout= (RelativeLayout) convertView.findViewById(R.id.item_information_relative_layout);
+            viewHolder.unread= (TextView) convertView.findViewById(R.id.item_information_unread);
             //存标签
             convertView.setTag(viewHolder);
         }else {
             viewHolder=(ViewHolder)convertView.getTag();
         }
         //获取对应item的用户名
-        String userName = item.getUserName();
+         userName = item.getUserName();
         DateFormat dateFormat = new SimpleDateFormat("MM—dd HH:mm");
 if (item.getLastMessage()!=null){
 
@@ -86,7 +88,7 @@ if (item.getLastMessage()!=null){
         //赋值给textview，，
         viewHolder.name.setText(userName);
         //定义一个接收消息的字符串
-        String ss;
+
         try {
             ss=item.getLastMessage().getBody().toString();
         } catch (Exception e) {
@@ -95,6 +97,7 @@ if (item.getLastMessage()!=null){
         }
         //将消息赋值给Textview
         viewHolder.message.setText(ss);
+        viewHolder.unread.setText(getweidu()+"");
 }
         //删除
         viewHolder.rmove.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +114,8 @@ if (item.getLastMessage()!=null){
            EMConversation emc = (EMConversation) getItem(position);
            intent.putExtra("ursename", emc.getUserName());
            context.startActivity(intent);
+           o();
+           notifyDataSetChanged();
        }
    });
         return convertView;
@@ -128,8 +133,21 @@ if (item.getLastMessage()!=null){
         this.notifyDataSetChanged();
 
     }
+    private int  getweidu(){
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(userName);
+       return conversation.getUnreadMsgCount();
+    }
+    public void o(){
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(userName);
+//指定会话消息未读数清零
+        conversation.markAllMessagesAsRead();
+//把一条消息置为已读
+        conversation.markMessageAsRead(ss);
+//所有未读消息数清零
+        EMClient.getInstance().chatManager().markAllConversationsAsRead();
+    }
     class ViewHolder{
-        TextView name,message,time;
+        TextView name,message,time,unread;
         RelativeLayout relativeLayout;
         Button rmove;
     }
