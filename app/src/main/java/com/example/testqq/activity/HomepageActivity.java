@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.example.testqq.R;
 import com.example.testqq.fragment.InformationFragment;
@@ -40,7 +41,7 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
     private List<Fragment> list = new ArrayList<Fragment>();//数据源泛型为Fragment
     private FragmentPagerAdapter fragmentPagerAdapter;//Fragment的适配器对象
     private Button informationButton, linkmanButton, settingUpButton;//点击按钮
-
+  private TextView textView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +65,8 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         informationButton = (Button) findViewById(R.id.homepage_information_button);
         linkmanButton = (Button) findViewById(R.id.homepage_linkman_button);
         settingUpButton = (Button) findViewById(R.id.homepage_setting_up_button);
+
+        textView= (TextView) findViewById(R.id.homepage_textview);
         //获取管理器
         fragmentManager = getSupportFragmentManager();
         //获取Fragment的适配器
@@ -140,16 +143,25 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
                 if(error == EMError.USER_REMOVED){
                     // 显示帐号已经被移除
                     toastShow(HomepageActivity.this,"帐号已经被移除");
+                    textView.setText("帐号已经被移除");
+                    textView.setVisibility(View.VISIBLE);
                 }else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
                     // 显示帐号在其他设备登录
                     toastShow(HomepageActivity.this,"帐号在其他设备登录");
+                    textView.setText("帐号在其他设备登录");
+                    textView.setVisibility(View.VISIBLE);
                 } else {
-                    if (NetUtils.hasNetwork(HomepageActivity.this))
-                    //连接不到聊天服务器
-                    toastShow(HomepageActivity.this,"连接不到聊天服务器");
-                    else
-                    toastShow(HomepageActivity.this,"当前网络不可用，请检查网络设置");
-                    //当前网络不可用，请检查网络设置
+                    if (NetUtils.hasNetwork(HomepageActivity.this)) {
+                        //连接不到聊天服务器
+                        toastShow(HomepageActivity.this, "连接不到聊天服务器");
+                        textView.setText("连接不到聊天服务器");
+                        textView.setVisibility(View.VISIBLE);
+                    }else {
+                        toastShow(HomepageActivity.this, "当前网络不可用，请检查网络设置");
+                        textView.setText("当前网络不可用，请检查网络设置");
+                        textView.setVisibility(View.VISIBLE);
+                        //当前网络不可用，请检查网络设置
+                    }
                 }
             }
         });

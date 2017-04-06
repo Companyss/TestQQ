@@ -62,6 +62,7 @@ public class LinkmanAdapter extends BaseAdapter {
         this.list=list;
         this.notifyDataSetChanged();
     }
+
     class MyHolder{
         TextView name;
 

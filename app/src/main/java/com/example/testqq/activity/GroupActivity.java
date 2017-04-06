@@ -97,7 +97,7 @@ public class GroupActivity extends BaseActivity implements AdapterView.OnItemCli
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dissucltion(groupId);
-               groupList.remove(position);
+                groupList.remove(position);
                 groupListAdapter.upData(groupList);
             }
         });
