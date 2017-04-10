@@ -26,11 +26,12 @@ import java.util.List;
 public class PrivateMessageAdapter extends BaseAdapter{
     private Context context;
     private List<EMMessage> list;
-    private String name;
     public PrivateMessageAdapter(Context context, List<EMMessage> list) {
         this.context = context;
         this.list = list;
     }
+
+
 
     @Override
     public int getCount() {
@@ -71,12 +72,12 @@ public class PrivateMessageAdapter extends BaseAdapter{
         DateFormat dateFormat = new SimpleDateFormat("MM—dd HH:mm");
         viewHolder.time.setText(dateFormat.format(emMessage.getMsgTime()));
         //判断消息是否从这发出
-        if (getname().equals(SPUtils.getlastLoginUserName(context))){
+        if (getname().equals(emMessage.getFrom())){
             //设置rightloy是否可见
             viewHolder.rightLoy.setVisibility(View.VISIBLE);
             viewHolder.liftLoy.setVisibility(View.GONE);
             //设置我发送的用户名
-            viewHolder.rightName.setText(SPUtils.getlastLoginUserName(context));
+            viewHolder.rightName.setText(getname());
             //
             EMTextMessageBody text = (EMTextMessageBody) emMessage.getBody();
             //设置我发送的内容

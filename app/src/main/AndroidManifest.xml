@@ -34,15 +34,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.HomepageActivity"/>
+        <activity android:name=".activity.HomepageActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".activity.BaseActivity"/>
         <activity android:name=".activity.LoginActivity"/>
         <activity android:name=".activity.RegisterActivity"/>
-        <activity android:name=".activity.PrivateMessageActivity"/>
+        <activity android:name=".activity.PrivateMessageActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".activity.FoundGroupActivity"/>
         <activity android:name=".activity.GroupActivity"/>
         <activity android:name=".activity.GroupMessageActivity"/>
        <activity android:name=".activity.GroupInfoActivity"/>
+        <activity android:name=".activity.VoiceCallActivity"/>
 
         <!-- 设置环信应用的AppKey -->
         <meta-data

@@ -1,8 +1,10 @@
 package com.example.testqq.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.testqq.R;
+import com.example.testqq.activity.HomepageActivity;
 import com.example.testqq.activity.PrivateMessageActivity;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
@@ -20,7 +23,9 @@ import com.hyphenate.chat.EMMessage;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 宋宝春 on 2017/3/23.
@@ -31,10 +36,12 @@ public class InformationAdapter extends BaseAdapter {
     private List<EMConversation> list;
     private Long timeMessage;
     private  String userName,ss;
-
-    public InformationAdapter(Context context, List<EMConversation> list) {
+    private HomepageActivity activity;
+    private Map<String,String> map=new HashMap<>();
+    public InformationAdapter(Context context, List<EMConversation> list, HomepageActivity a) {
         this.context = context;
         this.list = list;
+        this.activity=a;
     }
 
     @Override
@@ -77,6 +84,18 @@ public class InformationAdapter extends BaseAdapter {
         }
         //获取对应item的用户名
          userName = item.getUserName();
+        if (!TextUtils.isEmpty(map.get(userName))){
+            viewHolder.message.setText("[草稿]"+map.get(userName));
+        }else {
+            try {
+                ss=item.getLastMessage().getBody().toString();
+            } catch (Exception e) {
+                ss="";
+                e.printStackTrace();
+            }
+            //将消息赋值给Textview
+            viewHolder.message.setText(ss);
+        }
         DateFormat dateFormat = new SimpleDateFormat("MM—dd HH:mm");
 if (item.getLastMessage()!=null){
 
@@ -89,14 +108,6 @@ if (item.getLastMessage()!=null){
         viewHolder.name.setText(userName);
         //定义一个接收消息的字符串
 
-        try {
-            ss=item.getLastMessage().getBody().toString();
-        } catch (Exception e) {
-            ss="";
-            e.printStackTrace();
-        }
-        //将消息赋值给Textview
-        viewHolder.message.setText(ss);
         viewHolder.unread.setText(getweidu()+"");
 }
         //删除
@@ -113,7 +124,7 @@ if (item.getLastMessage()!=null){
            Intent intent = new Intent(context, PrivateMessageActivity.class);
            EMConversation emc = (EMConversation) getItem(position);
            intent.putExtra("ursename", emc.getUserName());
-           context.startActivity(intent);
+           activity.tiaozhuan(intent,101);
            o();
            notifyDataSetChanged();
        }
@@ -146,6 +157,12 @@ if (item.getLastMessage()!=null){
 //所有未读消息数清零
         EMClient.getInstance().chatManager().markAllConversationsAsRead();
     }
+
+    public void setMap(Map<String, String> map) {
+        this.map=map;
+         notifyDataSetChanged();
+    }
+
     class ViewHolder{
         TextView name,message,time,unread;
         RelativeLayout relativeLayout;

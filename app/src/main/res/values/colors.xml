@@ -7,4 +7,6 @@
     <color name="colorblue">#1E90FF</color>
     <color name="colorblu">#6495ED</color>
     <color name="black">#030303</color>
+    <color name="red">#ff0000</color>
+    <color name="green">#3cb546</color>
 </resources>

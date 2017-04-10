@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.testqq.R;
 import com.example.testqq.activity.FoundGroupActivity;
 import com.example.testqq.activity.GroupActivity;
+import com.example.testqq.activity.PrivateMessageActivity;
 import com.example.testqq.adapter.LinkmanAdapter;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMClient;
@@ -39,7 +40,7 @@ import java.util.List;
  * Created by 宋宝春 on 2017/3/22.
  */
 
-public class LinkmanFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, AdapterView.OnItemLongClickListener {
+public class LinkmanFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
     private View view;
     private ListView listView;
     private List<String> list;
@@ -85,6 +86,7 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener, V
         addfroupbtn.setOnClickListener(this);
         grouplist.setOnClickListener(this);
         listView.setOnItemLongClickListener(this);
+        listView.setOnItemClickListener(this);
     }
 
     /**
@@ -253,5 +255,13 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener, V
     private void remove1(int i) {
         newlist.remove(i);
         linkmanAdapter.upData(newlist);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+          Intent intent=new Intent(getActivity(), PrivateMessageActivity.class);
+     //   EMConversation emc = (EMConversation) linkmanAdapter.getItem(position);
+        intent.putExtra("ursename", list.get(position));
+           startActivity(intent);
     }
 }

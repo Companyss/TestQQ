@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.testqq.R;
+import com.example.testqq.activity.HomepageActivity;
 import com.example.testqq.activity.PrivateMessageActivity;
 import com.example.testqq.adapter.InformationAdapter;
 import com.hyphenate.EMCallBack;
@@ -36,6 +38,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +56,7 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     private InformationAdapter adapter;
    private TextView tv;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+  private Map<String,String> map=new HashMap<String,String>();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -106,7 +109,8 @@ private void ad(){
     //设置适配器
     private void setListView() {
         List<EMConversation> data = getData();
-        adapter = new InformationAdapter(getActivity(), data);
+        HomepageActivity activity = (HomepageActivity) getActivity();
+        adapter = new InformationAdapter(getActivity(), data,activity);
         listView.setAdapter(adapter);
 
     }
@@ -295,7 +299,12 @@ private void upDate(){
             e.printStackTrace();
         }
     }
-  class  MyB extends BroadcastReceiver{
+
+    public void setMap(Map<String, String> map) {
+        adapter.setMap(map);
+    }
+
+    class  MyB extends BroadcastReceiver{
 
       @Override
       public void onReceive(Context context, Intent intent) {
@@ -303,5 +312,4 @@ private void upDate(){
           adapter.upData(data);
       }
   }
-
 }

@@ -1,5 +1,9 @@
 package com.example.testqq.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,10 +11,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.testqq.R;
 import com.example.testqq.fragment.InformationFragment;
@@ -22,7 +28,9 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.util.NetUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 主页  主要有消息列表页  联系人 设置 三个页面
@@ -42,10 +50,13 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
     private FragmentPagerAdapter fragmentPagerAdapter;//Fragment的适配器对象
     private Button informationButton, linkmanButton, settingUpButton;//点击按钮
   private TextView textView;
+    private Map<String,String> map=new HashMap<String,String>();
+    private String urseName;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
+
         //调用加载数据方法
         addData();
         //调用初始化方法
@@ -203,4 +214,35 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
     public void onPageScrollStateChanged(int state) {
 
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 101:
+                Toast.makeText(this,"asd0",Toast.LENGTH_SHORT).show();
+                urseName = data.getStringExtra("urseName");
+                map.put(data.getStringExtra("urseName"),data.getStringExtra("text"));
+                try {
+                    if (TextUtils.isEmpty(data.getStringExtra("text"))){
+                        map.remove(data.getStringExtra("urseName"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+              informationFragment.setMap(map);
+                break;
+        }
+    }
+
+    public void tiaozhuan(Intent intent, int i) {
+        if (!TextUtils.isEmpty(map.get(urseName))) {
+            intent.putExtra("text", map.get(urseName));
+        }
+        startActivityForResult(intent,i);
+    }
+
+
+
+
+
 }
