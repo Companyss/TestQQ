@@ -1,12 +1,18 @@
 package com.example.testqq.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.example.testqq.R;
 
 /**
  * 基础类 用于创建一些公用的方法
@@ -75,5 +81,16 @@ public class BaseActivity extends AppCompatActivity {
         //打印显示
         toastShow(this,str);
     }
+    public static void httpImg(Context context, ImageView imageView, String s) {
 
+        Glide.with(context).load(s)//加载图片地址
+                .placeholder(R.mipmap.ic_launcher)//加载未完成是显示的图片
+                .error(R.mipmap.ic_launcher)//加载失败时显示的图片
+                //F.centerCrop()     //拉伸高度
+                .fitCenter()
+                //     .transform(new GlideRoundTransform(context))
+                .override(450, 450)
+                .into(imageView);//将加载的图片显示在控件上
+
+    }
 }

@@ -13,6 +13,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -125,16 +129,19 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
             case R.id.homepage_information_button:
                 viewPager.setCurrentItem(ZERO);
                 setBackgroud(viewPager.getCurrentItem());
+                scale(informationButton);
                 break;
             //点击跳转联系人列表页
             case R.id.homepage_linkman_button:
                 viewPager.setCurrentItem(ONE);
                 setBackgroud(viewPager.getCurrentItem());
+                scale(linkmanButton);
                 break;
             //点击跳转设置页
             case R.id.homepage_setting_up_button:
                 viewPager.setCurrentItem(TWO);
                 setBackgroud(viewPager.getCurrentItem());
+                scale(settingUpButton);
                 break;
         }
     }
@@ -219,7 +226,6 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case 101:
-                Toast.makeText(this,"asd0",Toast.LENGTH_SHORT).show();
                 urseName = data.getStringExtra("urseName");
                 map.put(data.getStringExtra("urseName"),data.getStringExtra("text"));
                 try {
@@ -240,7 +246,12 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         }
         startActivityForResult(intent,i);
     }
+  private void scale(View view){
+      Animation scaleAnimation= AnimationUtils.loadAnimation(this,R.anim.scale);
+      view.setAnimation(scaleAnimation);
+      view.startAnimation(scaleAnimation);
 
+  }
 
 
 

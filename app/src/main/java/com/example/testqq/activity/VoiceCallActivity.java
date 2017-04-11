@@ -39,6 +39,7 @@ public class VoiceCallActivity extends BaseActivity implements View.OnClickListe
             case R.id.voice_call_hangup_btn:
                 hangup();
                 finish();
+
                 break;
         }
     }
@@ -68,7 +69,7 @@ public class VoiceCallActivity extends BaseActivity implements View.OnClickListe
     private void hangup(){
 
         try {
-            EMClient.getInstance().callManager().rejectCall();
+            EMClient.getInstance().callManager().endCall();
         } catch (EMNoActiveCallException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

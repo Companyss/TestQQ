@@ -49,6 +49,10 @@ public class GroupMessageActivity extends BaseActivity implements EMCallBack, Vi
         EMClient.getInstance().chatManager().addMessageListener(this);
         setTitleName();
     }
+
+    /**
+     * 初始化控件
+     */
     private void  initView(){
         message= (EditText) findViewById(R.id.group_message_edtext);
         send= (Button) findViewById(R.id.group_message_sendbtn);
@@ -69,6 +73,9 @@ public class GroupMessageActivity extends BaseActivity implements EMCallBack, Vi
         listView.setAdapter(adapter);
     }
 
+    /**
+     * 获取群组所有会话
+     */
     private void initDate() {
         if (TextUtils.isEmpty(groupId)) {
             //获取单个回话
@@ -92,6 +99,10 @@ public class GroupMessageActivity extends BaseActivity implements EMCallBack, Vi
 
     }
 
+    /**
+     * 发送消息
+     * @param msgStr  消息内容
+     */
     private void sendMessage(String msgStr){
         EMMessage message;
         //创建一条文本消息，content为消息文字内容

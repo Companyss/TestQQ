@@ -25,29 +25,28 @@
             android:textSize="18dp"/>
 
     </LinearLayout>
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/private_message_swipe_refresh_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="460dp">
+
         <ListView
             android:id="@+id/private_message_listview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:scrollbars="none"
             android:divider="@null"
             android:listSelector="#87CEFA"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <EditText
             android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:id="@+id/private_message_edtext"
             android:ems="15"
             />
+
         <Button
             android:background="@drawable/login_btn_bg"
             android:layout_width="wrap_content"
@@ -55,4 +54,49 @@
             android:id="@+id/private_message_sendbtn"
             android:text="@string/send"/>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/private_message_image_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="图片"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/private_message_void_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="视频"
+           android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/private_message_yuyin_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="语音"
+            android:layout_weight="1"/>
+    </LinearLayout>
+  <LinearLayout
+      android:id="@+id/private_message_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
+
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/private_message_image_recyclerView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          >
+      </android.support.v7.widget.RecyclerView>
+      <Button
+          android:id="@+id/send_image"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="发送"
+           android:layout_marginLeft="260dp"/>
+  </LinearLayout>
 </LinearLayout>

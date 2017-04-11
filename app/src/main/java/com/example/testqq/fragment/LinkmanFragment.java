@@ -261,7 +261,7 @@ public class LinkmanFragment extends Fragment implements View.OnClickListener, V
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
           Intent intent=new Intent(getActivity(), PrivateMessageActivity.class);
      //   EMConversation emc = (EMConversation) linkmanAdapter.getItem(position);
-        intent.putExtra("ursename", list.get(position));
+        intent.putExtra("ursename", newlist.get(position));
            startActivity(intent);
     }
 }
