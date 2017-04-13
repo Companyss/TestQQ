@@ -1,24 +1,17 @@
 package com.example.testqq.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +34,7 @@ import java.util.Map;
  * Created by 宋宝春 on 2017/3/22.
  */
 
-public class HomepageActivity extends BaseActivity implements View.OnClickListener ,EMConnectionListener, ViewPager.OnPageChangeListener {
+public class HomepageActivity extends BaseActivity implements View.OnClickListener ,EMConnectionListener, ViewPager.OnPageChangeListener, ViewPager.PageTransformer {
     private final static int ONE = 1;
     private final static int TWO = 2;
     private final static int ZERO = 0;
@@ -63,10 +56,11 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
 
         //调用加载数据方法
         addData();
+
         //调用初始化方法
         initialize();
-        //注册一个监听连接状态的listener
 
+        //注册一个监听连接状态的listener
         EMClient.getInstance().addConnectionListener(this);
     }
 
@@ -100,12 +94,16 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         viewPager.setAdapter(fragmentPagerAdapter);
         //设置被选中的页面    参数初始页面的下标
         viewPager.setCurrentItem(0);
+        viewPager.setPageTransformer(true,this);
         //添加点击事件
         informationButton.setOnClickListener(this);
         linkmanButton.setOnClickListener(this);
         settingUpButton.setOnClickListener(this);
         viewPager.setOnPageChangeListener(this);
         setBackgroud(ZERO);
+        scaleDa(informationButton);
+        scaleXiao(linkmanButton);
+        scaleXiao(settingUpButton);
     }
 
     /**
@@ -115,7 +113,7 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         informationFragment = new InformationFragment();
         linkmanFragment = new LinkmanFragment();
         settingUpFragment = new SettingUpFragment();
-        GroupActivity g=new GroupActivity();
+
         list.add(informationFragment);
         list.add(linkmanFragment);
         list.add(settingUpFragment);
@@ -129,19 +127,31 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
             case R.id.homepage_information_button:
                 viewPager.setCurrentItem(ZERO);
                 setBackgroud(viewPager.getCurrentItem());
-                scale(informationButton);
+                if (viewPager.getCurrentItem()==ZERO){
+                    scaleDa(informationButton);
+                }
+                scaleXiao(linkmanButton);
+                scaleXiao(settingUpButton);
                 break;
             //点击跳转联系人列表页
             case R.id.homepage_linkman_button:
                 viewPager.setCurrentItem(ONE);
                 setBackgroud(viewPager.getCurrentItem());
-                scale(linkmanButton);
+                if (viewPager.getCurrentItem()==ONE){
+                    scaleDa(linkmanButton);
+                }
+                scaleXiao(informationButton);
+                scaleXiao(settingUpButton);
                 break;
             //点击跳转设置页
             case R.id.homepage_setting_up_button:
                 viewPager.setCurrentItem(TWO);
                 setBackgroud(viewPager.getCurrentItem());
-                scale(settingUpButton);
+                if (viewPager.getCurrentItem()==TWO){
+                    scaleDa(settingUpButton);
+                }
+                scaleXiao(linkmanButton);
+                scaleXiao(informationButton);
                 break;
         }
     }
@@ -192,17 +202,17 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
     private void setBackgroud(int i){
         if ( i==0) {
             informationButton.setBackgroundResource(R.color.colorPrimary);
-            linkmanButton.setBackgroundResource(R.color.colorWhite);
-            settingUpButton.setBackgroundResource(R.color.colorWhite);
+            linkmanButton.setBackgroundResource(R.color.colorAccent);
+            settingUpButton.setBackgroundResource(R.color.colorAccent);
         }
         if (i==1)  {
-            informationButton.setBackgroundResource(R.color.colorWhite);
+            informationButton.setBackgroundResource(R.color.colorAccent);
             linkmanButton.setBackgroundResource(R.color.colorPrimary);
-            settingUpButton.setBackgroundResource(R.color.colorWhite);
+            settingUpButton.setBackgroundResource(R.color.colorAccent);
         }
         if (i==2)  {
-            informationButton.setBackgroundResource(R.color.colorWhite);
-            linkmanButton.setBackgroundResource(R.color.colorWhite);
+            informationButton.setBackgroundResource(R.color.colorAccent);
+            linkmanButton.setBackgroundResource(R.color.colorAccent);
             settingUpButton.setBackgroundResource(R.color.colorPrimary);
         }
     }
@@ -215,6 +225,22 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onPageSelected(int position) {
           setBackgroud(position);
+        if (position==ZERO){
+            scaleDa(informationButton);
+            scaleXiao(linkmanButton);
+            scaleXiao(settingUpButton);
+        }else if (position==ONE){
+            scaleDa(linkmanButton);
+            scaleXiao(informationButton);
+            scaleXiao(settingUpButton);
+        }else if (position== TWO){
+            scaleDa(settingUpButton);
+            scaleXiao(linkmanButton);
+            scaleXiao(informationButton);
+        }
+
+
+
     }
 
     @Override
@@ -240,20 +266,40 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    /**
+     * 设置草稿时跳转的方法并携带文本内容
+     * @param intent  intent
+     * @param i  标识
+     */
     public void tiaozhuan(Intent intent, int i) {
         if (!TextUtils.isEmpty(map.get(urseName))) {
             intent.putExtra("text", map.get(urseName));
         }
         startActivityForResult(intent,i);
     }
-  private void scale(View view){
-      Animation scaleAnimation= AnimationUtils.loadAnimation(this,R.anim.scale);
+
+    /**
+     *
+     *  设置动画
+     */
+  private void scaleDa(View view){
+      Animation scaleAnimation= AnimationUtils.loadAnimation(this,R.anim.scale_da);
       view.setAnimation(scaleAnimation);
       view.startAnimation(scaleAnimation);
 
   }
+    private void scaleXiao(View view){
+        Animation scaleAnimation= AnimationUtils.loadAnimation(this,R.anim.scale_xiao);
+        view.setAnimation(scaleAnimation);
+        view.startAnimation(scaleAnimation);
+
+    }
 
 
-
-
+    @Override
+    public void transformPage(View page, float position) {
+        Animation scaleAnimation= AnimationUtils.loadAnimation(this,R.anim.fragment_switch_animation);
+        page.setAnimation(scaleAnimation);
+        page.startAnimation(scaleAnimation);
+    }
 }

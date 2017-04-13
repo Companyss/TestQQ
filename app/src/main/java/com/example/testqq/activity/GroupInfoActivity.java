@@ -71,5 +71,6 @@ public class GroupInfoActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         addFriend();
+    adapter.notifyDataSetChanged();
     }
 }

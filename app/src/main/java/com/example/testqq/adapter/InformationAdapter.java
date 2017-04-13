@@ -1,21 +1,20 @@
 package com.example.testqq.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.testqq.R;
 import com.example.testqq.activity.HomepageActivity;
 import com.example.testqq.activity.PrivateMessageActivity;
+import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
@@ -65,7 +64,6 @@ public class InformationAdapter extends BaseAdapter {
 
         //获取回话的Item
         EMConversation item = (EMConversation) getItem(position);
-
         if (convertView==null){
 
             convertView=View.inflate(context, R.layout.item_information,null);
@@ -87,17 +85,31 @@ public class InformationAdapter extends BaseAdapter {
         if (!TextUtils.isEmpty(map.get(userName))){
             viewHolder.message.setText("[草稿]"+map.get(userName));
         }else {
+
             try {
-                ss=item.getLastMessage().getBody().toString();
+                EMMessage lastMessage = item.getLastMessage();
+
+                switch (lastMessage.getType()){
+                    case TXT:
+                        ss=item.getLastMessage().getBody().toString();
+                        viewHolder.message.setText(ss);
+                        break;
+                    case IMAGE:
+                        viewHolder.message.setText("[图片]");
+                        break;
+                }
+
             } catch (Exception e) {
-                ss="";
+                ss = "";
                 e.printStackTrace();
             }
             //将消息赋值给Textview
-            viewHolder.message.setText(ss);
+
+
+
         }
         DateFormat dateFormat = new SimpleDateFormat("MM—dd HH:mm");
-if (item.getLastMessage()!=null){
+    if (item.getLastMessage()!=null){
 
 
         viewHolder.time.setText(dateFormat.format(item.getLastMessage().getMsgTime()));

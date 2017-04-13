@@ -48,12 +48,19 @@
                 android:textColor="@color/colorblue"
                 android:text="显示好友的用户名"/>
 
+
             <TextView
                 android:id="@+id/item_msg_lift_message1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18dp"
                 android:text="显示好友的聊天内容"/>
+
+            <ImageView
+                android:id="@+id/item_msg_lift_image1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher"/>
         </LinearLayout>
 
 
@@ -92,6 +99,11 @@
                 android:layout_height="wrap_content"
                 android:textSize="18dp"
                 android:text="显示本人的聊天内容"/>
+            <ImageView
+                android:id="@+id/item_msg_right_image1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher"/>
         </LinearLayout>
 
         <ImageView

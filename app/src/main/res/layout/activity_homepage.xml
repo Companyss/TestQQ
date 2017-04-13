@@ -20,7 +20,8 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/homepage_viewPager"
         android:layout_width="match_parent"
-        android:layout_height="467dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 <FrameLayout
     android:id="@+id/homepage_FrameLayout"
     android:layout_width="wrap_content"
@@ -36,23 +37,25 @@
        >
         <Button
             android:id="@+id/homepage_information_button"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/information_footer"
-            android:background="@color/colorWhite"/>
+            android:background="@color/colorWhite"
+            android:layout_weight="1"/>
         <Button
             android:id="@+id/homepage_linkman_button"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/linkman_footer"
-            android:background="@color/colorWhite"/>
+            android:background="@color/colorWhite"
+            android:layout_weight="1"/>
         <Button
             android:id="@+id/homepage_setting_up_button"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/setting_up_footer"
             android:background="@color/colorWhite"
-            />
+            android:layout_weight="1"/>
 
     </LinearLayout>
     </LinearLayout>

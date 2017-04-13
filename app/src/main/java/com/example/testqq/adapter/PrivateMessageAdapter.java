@@ -10,8 +10,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.testqq.R;
 import com.example.testqq.vules.SPUtils;
+import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 
@@ -72,25 +74,68 @@ public class PrivateMessageAdapter extends BaseAdapter{
         DateFormat dateFormat = new SimpleDateFormat("MM—dd HH:mm");
         viewHolder.time.setText(dateFormat.format(emMessage.getMsgTime()));
         //判断消息是否从这发出
-        if (getname().equals(emMessage.getFrom())){
-            //设置rightloy是否可见
-            viewHolder.rightLoy.setVisibility(View.VISIBLE);
-            viewHolder.liftLoy.setVisibility(View.GONE);
-            //设置我发送的用户名
-            viewHolder.rightName.setText(getname());
-            //
-            EMTextMessageBody text = (EMTextMessageBody) emMessage.getBody();
-            //设置我发送的内容
-            viewHolder.rightMessage.setText(text.getMessage());
-        }else {
-            viewHolder.rightLoy.setVisibility(View.GONE);
-            viewHolder.liftLoy.setVisibility(View.VISIBLE);
-            //设置谁给我发送的用户名
-            viewHolder.leftName.setText(emMessage.getUserName());
-            //
-            EMTextMessageBody txt= (EMTextMessageBody) emMessage.getBody();
-            //设置发送的内容
-            viewHolder.leftMessage.setText(txt.getMessage());
+        //获取消息类型
+        EMMessage.Type typeMsg = emMessage.getType();
+        switch (typeMsg){
+            case TXT:
+                if (getname().equals(emMessage.getFrom())){
+                    //设置rightloy是否可见
+                    viewHolder.rightLoy.setVisibility(View.VISIBLE);
+                    viewHolder.liftLoy.setVisibility(View.GONE);
+                    viewHolder.rightMessage.setVisibility(View.VISIBLE);
+                    viewHolder.rightpictrue.setVisibility(View.GONE);
+                    //设置我发送的用户名
+                    viewHolder.rightName.setText(getname());
+                    //
+                    EMTextMessageBody text = (EMTextMessageBody) emMessage.getBody();
+                    //设置我发送的内容
+                    viewHolder.rightMessage.setText(text.getMessage());
+                }else {
+                    viewHolder.rightLoy.setVisibility(View.GONE);
+                    viewHolder.liftLoy.setVisibility(View.VISIBLE);
+                    viewHolder.leftMessage.setVisibility(View.VISIBLE);
+                    viewHolder.leftpictrue.setVisibility(View.GONE);
+                    //设置谁给我发送的用户名
+                    viewHolder.leftName.setText(emMessage.getUserName());
+                    //
+                    EMTextMessageBody txt= (EMTextMessageBody) emMessage.getBody();
+                    //设置发送的内容
+                    viewHolder.leftMessage.setText(txt.getMessage());
+                }
+                 break;
+            case IMAGE:
+                EMImageMessageBody text = (EMImageMessageBody) emMessage.getBody();
+                if (getname().equals(emMessage.getFrom())){
+                    //设置rightloy是否可见
+                    viewHolder.rightLoy.setVisibility(View.VISIBLE);
+                    viewHolder.liftLoy.setVisibility(View.GONE);
+                    viewHolder.rightMessage.setVisibility(View.GONE);
+                    viewHolder.rightpictrue.setVisibility(View.VISIBLE);
+                    //设置我发送的用户名
+                    viewHolder.rightName.setText(getname());
+                    //
+             //        text = (EMImageMessageBody) emMessage.getBody();
+                    //设置我发送的图片
+                    Glide.with(context)
+                            .load(text.getLocalUrl())
+                            .override(300, 200)
+                            .into(viewHolder.rightpictrue);
+                }else {
+                    viewHolder.rightLoy.setVisibility(View.GONE);
+                    viewHolder.liftLoy.setVisibility(View.VISIBLE);
+                    viewHolder.leftMessage.setVisibility(View.GONE);
+                    viewHolder.leftpictrue.setVisibility(View.VISIBLE);
+                    //设置谁给我发送的用户名
+                    viewHolder.leftName.setText(emMessage.getUserName());
+                    //
+                //    EMImageMessageBody text = (EMImageMessageBody) emMessage.getBody();
+                    //设置我接收到的图片
+                    Glide.with(context)
+                            .load(text.getThumbnailUrl())
+                            .override(300, 200)
+                            .into(viewHolder.leftpictrue);
+                }
+                break;
         }
 
     }
@@ -108,7 +153,7 @@ public class PrivateMessageAdapter extends BaseAdapter{
         private LinearLayout timeLoy;
         private RelativeLayout liftLoy,rightLoy;
         private TextView time,leftName,leftMessage,rightName,rightMessage;
-        private ImageView leftImg,rightImg;
+        private ImageView leftImg,rightImg, leftpictrue,rightpictrue;
         //初始化数据
         void setViews(View view){
             timeLoy= (LinearLayout) view.findViewById(R.id.item_msg_time_loy);
@@ -121,6 +166,8 @@ public class PrivateMessageAdapter extends BaseAdapter{
             rightName= (TextView) view.findViewById(R.id.item_msg_right_name1);
             rightMessage= (TextView) view.findViewById(R.id.item_msg_right_message1);
             rightImg= (ImageView) view.findViewById(R.id.item_msg_right_img1);
+            leftpictrue= (ImageView) view.findViewById(R.id.item_msg_lift_image1);
+            rightpictrue= (ImageView) view.findViewById(R.id.item_msg_right_image1);
         }
 
     }

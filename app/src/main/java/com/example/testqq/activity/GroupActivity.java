@@ -40,6 +40,7 @@ public class GroupActivity extends BaseActivity implements AdapterView.OnItemCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fridegroup);
         initView();
+        setBar();
     }
     //初始化
     private void initView(){
@@ -51,7 +52,15 @@ public class GroupActivity extends BaseActivity implements AdapterView.OnItemCli
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
     }
+  private void setBar(){
+      try {
+          getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+          getSupportActionBar().setTitle("群组列表");
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
 
+  }
 
 //获取
   private void getData(){

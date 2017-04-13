@@ -15,7 +15,12 @@
 
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+<style name="MyAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <item name="windowNoTitle">true</item>
+    <item name="android:windowFullscreen">true</item>
 
+
+</style>
 
 
 
