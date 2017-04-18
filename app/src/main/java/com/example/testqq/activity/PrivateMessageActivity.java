@@ -4,8 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.media.audiofx.LoudnessEnhancer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,14 +25,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.testqq.R;
 import com.example.testqq.adapter.PrivateMessageAdapter;
 
+import com.example.testqq.fragment.InformationFragment;
 import com.example.testqq.fragment.PictureFragment;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
@@ -34,6 +44,10 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.EMServiceNotReadyException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.HashSet;
@@ -45,16 +59,14 @@ import java.util.List;
  * Created by 宋宝春 on 2017/3/27.
  */
 public class PrivateMessageActivity extends BaseActivity implements EMCallBack, EMMessageListener, View.OnClickListener, TextWatcher {
-    public static String[] picture = new String[]{".jpg", ".png", ".gif", ".bmp"};
     private ListView listView;
     private Button sendbtn, imagebtn, voidbtn, yuyinbtn;
     private EditText editText;
     private List<EMMessage> list;
     private String urseName;
-    private String groupId;
+    private String groupId,msgId;
     private PrivateMessageAdapter mesageAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-
 
     private String text;
     private EMMessage imageSendMessage;
@@ -84,8 +96,6 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         super.onDestroy();
         EMClient.getInstance().chatManager().removeMessageListener(this);
     }
-
-
     /**
      * 初始化控件
      */
@@ -96,6 +106,7 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         voidbtn = (Button) findViewById(R.id.private_message_void_btn);
         yuyinbtn = (Button) findViewById(R.id.private_message_yuyin_btn);
         editText = (EditText) findViewById(R.id.private_message_edtext);
+        swipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.private_message_swipe_refresh_layout);
         pictureFragment = new PictureFragment();
         fragmentManager = getSupportFragmentManager();
         //获取用户名
@@ -112,11 +123,40 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
 
         imagebtn.setOnClickListener(this);
         sendbtn.setOnClickListener(this);
+        voidbtn.setOnClickListener(this);
         editText.setText(text);
-
-
+        data();
     }
 
+    private  List<EMMessage> liaotianjilu(){
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(urseName);
+//获取此会话的所有消息
+        List<EMMessage> messages1 = conversation.getAllMessages();
+//SDK初始化加载的聊天记录为20条，到顶时需要去DB里获取更多
+
+        for (EMMessage s:list){
+             msgId = s.getMsgId();
+        }
+//获取startMsgId之前的pagesize条消息，此方法获取的messages SDK会自动存入到此会话中，APP中无需再次把获取到的messages添加到会话中
+        List<EMMessage> messages = conversation.loadMoreMsgFromDB(msgId, 20);
+        return messages;
+    }
+ private void data(){
+     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+         @Override
+         public void onRefresh() {
+             new Handler().postDelayed(new Runnable() {
+                 @Override
+                 public void run() {
+                     List<EMMessage> data = liaotianjilu();
+                     mesageAdapter.upData(data);
+                     swipeRefreshLayout.setRefreshing(false);
+                 //    Toast.makeText(getActivity(), "数据已更新", Toast.LENGTH_SHORT).show();
+                 }
+             },1000);
+         }
+     });
+ }
     //设置标题栏的title
     private void setActionBar() {
         try {
@@ -282,13 +322,13 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
     //成功
     @Override
     public void onSuccess() {
-        toastShow(this, "成功");
+        Log.e("onSuccess", "成功");
     }
 
     //失败
     @Override
     public void onError(int i, String s) {
-        toastShow(this, "失败");
+        Log.e("OnError", "失败 = "+i+"　　"+s);
     }
 
     @Override
@@ -298,6 +338,7 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
 
     @Override
     public void onMessageReceived(List<EMMessage> list) {
+        Log.e("onMessageReceived","收到消息"+list);
         mesageAdapter.upData(list);
         this.list.addAll(list);
     }
@@ -349,7 +390,53 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
                     fragmentTransaction.commit();
                 }
                 break;
+
+            case R.id.private_message_void_btn:
+                Intent intent=new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_SHOW_ACTION_ICONS,10);
+                startActivityForResult(intent,106);
+                break;
         }
+    }
+
+    /**
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 106:
+                if (resultCode==RESULT_OK){
+                    EMMessage videoSendMessage = EMMessage.createVideoSendMessage(
+                            getPath(data.getData()),//视频路径
+                            "1492414824071.jpg"                     //视频预览路径
+                            , 5000                //视频时长
+                            , urseName);//用户名
+                    sendMessage(videoSendMessage);
+
+                }
+                break;
+        }
+    }
+    /**
+     * 根据视频文件的URI获取文件路径
+     * @param uri 视频文件URi
+     *  @return  文件路径
+     */
+    private String getPath(Uri uri){
+        //定义需要查询的字段  路径
+        String[] projection={MediaStore.Video.Media.DATA};
+        //查询Uri
+        Cursor cursor=managedQuery(uri,projection,null,null,null);
+        //获取 所需要的字段 对应的列下标
+        int column_index=cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+        //将游标指针移动到第一个
+        cursor.moveToFirst();
+        //返回根据字段下标获取数据
+        return cursor.getString(column_index);
     }
 
     /**

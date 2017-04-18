@@ -12,6 +12,7 @@ import com.hyphenate.exceptions.EMNoActiveCallException;
 
 /**
  * Created by 宋宝春 on 2017/4/10.
+ * 语音通话界面
  */
 
 public class VoiceCallActivity extends BaseActivity implements View.OnClickListener, EMCallStateChangeListener {

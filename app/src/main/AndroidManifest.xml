@@ -47,6 +47,12 @@
         <activity android:name=".activity.GroupMessageActivity"/>
        <activity android:name=".activity.GroupInfoActivity"/>
         <activity android:name=".activity.VoiceCallActivity"/>
+        <activity android:name=".activity.PictureActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/MyAppTheme" />
+        <activity android:name=".activity.VideoActivity"
+            android:theme="@style/MyAppTheme"/>
+
 
         <!-- 设置环信应用的AppKey -->
         <meta-data

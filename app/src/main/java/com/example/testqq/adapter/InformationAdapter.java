@@ -97,6 +97,9 @@ public class InformationAdapter extends BaseAdapter {
                     case IMAGE:
                         viewHolder.message.setText("[图片]");
                         break;
+                    case VIDEO:
+                        viewHolder.message.setText("[视频]");
+                        break;
                 }
 
             } catch (Exception e) {
@@ -137,8 +140,8 @@ public class InformationAdapter extends BaseAdapter {
            EMConversation emc = (EMConversation) getItem(position);
            intent.putExtra("ursename", emc.getUserName());
            activity.tiaozhuan(intent,101);
-           o();
            notifyDataSetChanged();
+           o();
        }
    });
         return convertView;

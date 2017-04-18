@@ -1,6 +1,7 @@
 package com.example.testqq.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +51,7 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
   private TextView textView;
     private Map<String,String> map=new HashMap<String,String>();
     private String urseName;
+    private Bitmap data1;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -251,7 +254,11 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
+
             case 101:
+                if (resultCode == RESULT_OK) {
+
+
                 urseName = data.getStringExtra("urseName");
                 map.put(data.getStringExtra("urseName"),data.getStringExtra("text"));
                 try {
@@ -262,10 +269,11 @@ public class HomepageActivity extends BaseActivity implements View.OnClickListen
                     e.printStackTrace();
                 }
               informationFragment.setMap(map);
+                }
                 break;
+
         }
     }
-
     /**
      * 设置草稿时跳转的方法并携带文本内容
      * @param intent  intent
