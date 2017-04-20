@@ -27,9 +27,9 @@ import com.hyphenate.chat.EMClient;
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private EditText account, password;
     private Button loginbtn;
-            private TextView registerbtn;
+    private TextView registerbtn;
     private MyDialog g;
-    private CheckBox remember_box,protocol_box;
+    private CheckBox remember_box, protocol_box;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,17 +47,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         password = (EditText) findViewById(R.id.login_password_edit_text);
         loginbtn = (Button) findViewById(R.id.login_login_button);
         registerbtn = (TextView) findViewById(R.id.login_register_button);
-        remember_box= (CheckBox) findViewById(R.id.login_remember_box);
-        protocol_box= (CheckBox) findViewById(R.id.login_protocol_box);
+        remember_box = (CheckBox) findViewById(R.id.login_remember_box);
+        protocol_box = (CheckBox) findViewById(R.id.login_protocol_box);
         loginbtn.setOnClickListener(this);
         registerbtn.setOnClickListener(this);
         //进度提示框
-         g=new MyDialog(this,R.style.CustomDialog);
+        g = new MyDialog(this, R.style.CustomDialog);
 
-        account.setText( SPUtils.getlastLoginUserName(this));
+        account.setText(SPUtils.getlastLoginUserName(this));
         password.setText(SPUtils.getlastLoginPassword(this));
         //设置光标的位置在字符串的最后一位
-         account.setSelection(account.getText().toString().length());
+        account.setSelection(account.getText().toString().length());
     }
 
     /**
@@ -76,42 +76,46 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 errToast(reCde);
                 break;
         }
-        SPUtils.setLastLoginUsername(this,stracc);
-        SPUtils.setLastLoginPassword(this,strpass);
+        SPUtils.setLastLoginUsername(this, stracc);
+        SPUtils.setLastLoginPassword(this, strpass);
     }
+
     //必须点击同意才可以登录
- private void protocol(){
-     if (protocol_box.isChecked()==true){
-         startLogin();
-     }else {
-         toastShow(this,"请阅读用户协议后点击同意");
-     }
- }
+    private void protocol() {
+                if (protocol_box.isChecked() == true) {
+                    startLogin();
+        } else {
+            toastShow(this, "请阅读用户协议后点击同意");
+        }
+    }
 
     /**
      * 登录方法
-     * @param stracc    账户
-     * @param strpass   密码
+     *
+     * @param stracc  账户
+     * @param strpass 密码
      */
     private void login(String stracc, String strpass) {
-        EMClient.getInstance().login(stracc,strpass,new EMCallBack() {//回调
+        EMClient.getInstance().login(stracc, strpass, new EMCallBack() {//回调
             @Override
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();
                 EMClient.getInstance().chatManager().loadAllConversations();
                 //跳转到主页
-                Splik(LoginActivity.this,new Intent(LoginActivity.this,HomepageActivity.class));
-                toastShow(LoginActivity.this,"登录聊天服务器成功！");
+                Splik(LoginActivity.this, new Intent(LoginActivity.this, HomepageActivity.class));
+                toastShow(LoginActivity.this, "登录聊天服务器成功！");
                 g.cancel();
 
             }
+
             @Override
             public void onProgress(int progress, String status) {
 
             }
+
             @Override
             public void onError(int code, String message) {
-               toastShow(LoginActivity.this,"登录聊天服务器失败！");
+                toastShow(LoginActivity.this, "登录聊天服务器失败！");
                 g.cancel();
             }
         });
@@ -138,12 +142,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.login_login_button:
                 protocol();
                 break;
             case R.id.login_register_button:
-              Splik(LoginActivity.this,new Intent(LoginActivity.this,RegisterActivity.class));
+                Splik(LoginActivity.this, new Intent(LoginActivity.this, RegisterActivity.class));
                 break;
         }
     }

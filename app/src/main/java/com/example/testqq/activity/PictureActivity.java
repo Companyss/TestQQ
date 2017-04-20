@@ -3,6 +3,7 @@ package com.example.testqq.activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -17,15 +18,26 @@ public class PictureActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity);
-        s= (ImageView) findViewById(R.id.s);
-        ss= (ImageView) findViewById(R.id.ss);
+        initVIew();
+        openPicture();
+    }
+
+    private void openPicture() {
         String paht = getIntent().getStringExtra("paht");
-        Glide.with(this)
-                .load(paht)
-                .into(s);
         String rpaht = getIntent().getStringExtra("rpaht");
-        Glide.with(this)
-                .load(rpaht)
-                .into(ss);
+        if (TextUtils.isEmpty(paht)){
+            Glide.with(this)
+                    .load(rpaht)
+                    .into(s);
+        }
+        if (TextUtils.isEmpty(rpaht)){
+            Glide.with(this)
+                    .load(paht)
+                    .into(s);
+        }
+    }
+
+    private void initVIew() {
+        s= (ImageView) findViewById(R.id.s);
     }
 }

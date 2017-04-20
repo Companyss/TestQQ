@@ -46,13 +46,18 @@ public class GroupActivity extends BaseActivity implements AdapterView.OnItemCli
     private void initView(){
         listView = (ListView) findViewById(R.id.group_listview);
         groupList=new ArrayList<>();
-        getData();
-        groupListAdapter=new GroupListAdapter(this,groupList);
-        listView.setAdapter(groupListAdapter);
+        setApapter();
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
     }
-  private void setBar(){
+//设置适配器
+    private void setApapter() {
+        getData();
+        groupListAdapter=new GroupListAdapter(this,groupList);
+        listView.setAdapter(groupListAdapter);
+    }
+
+    private void setBar(){
       try {
           getSupportActionBar().setDisplayHomeAsUpEnabled(true);
           getSupportActionBar().setTitle("群组列表");
@@ -64,8 +69,6 @@ public class GroupActivity extends BaseActivity implements AdapterView.OnItemCli
 
 //获取
   private void getData(){
-
-
       new Thread(new Runnable() {
           @Override
           public void run() {

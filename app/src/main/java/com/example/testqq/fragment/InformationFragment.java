@@ -56,7 +56,6 @@ public class InformationFragment extends Fragment implements View.OnClickListene
     private InformationAdapter adapter;
    private TextView tv;
     private SwipeRefreshLayout swipeRefreshLayout;
-  private Map<String,String> map=new HashMap<String,String>();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -203,7 +202,7 @@ private void upDate(){
             @Override
             public void run() {
                 Toast.makeText(getActivity(), "消息发送成功", Toast.LENGTH_SHORT).show();
-
+                adapter.upData(list);
             }
         });
     }
