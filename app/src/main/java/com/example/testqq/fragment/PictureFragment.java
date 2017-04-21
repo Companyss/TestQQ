@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -133,30 +134,36 @@ public class PictureFragment extends Fragment implements View.OnClickListener {
                 if (resultCode==getActivity().RESULT_OK) {
                     //获取图片的对象
                     Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                    File f = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
-                    try {
-                        //开启这个文件的输出流
-                        FileOutputStream out = new FileOutputStream(f);
-                        //吧bitmap内容写入输出流
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                        try {
-                            //刷新输出流
-                            out.flush();
-                            //关闭输出流
-                            out.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    File f = creatBitMap(bitmap);
                     activity.sendImage(f.getAbsolutePath());
                 }
                 break;
 
 
         }
+    }
+
+    @NonNull
+    public File creatBitMap(Bitmap bitmap) {
+        File f = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
+        try {
+            //开启这个文件的输出流
+            FileOutputStream out = new FileOutputStream(f);
+            //吧bitmap内容写入输出流
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            try {
+                //刷新输出流
+                out.flush();
+                //关闭输出流
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return f;
     }
 
 }

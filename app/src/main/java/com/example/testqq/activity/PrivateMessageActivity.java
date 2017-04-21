@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,7 +45,12 @@ import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMVideoMessageBody;
 import com.hyphenate.exceptions.EMServiceNotReadyException;
+
+import org.wlf.filedownloader.DownloadFileInfo;
+import org.wlf.filedownloader.FileDownloader;
+import org.wlf.filedownloader.listener.OnFileDownloadStatusListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,7 +66,12 @@ import java.util.List;
  * 会话页
  * Created by 宋宝春 on 2017/3/27.
  */
-public class PrivateMessageActivity extends BaseActivity implements EMCallBack, EMMessageListener, View.OnClickListener, TextWatcher {
+public class PrivateMessageActivity extends BaseActivity implements EMCallBack, EMMessageListener, View.OnClickListener, TextWatcher, OnFileDownloadStatusListener {
+    String newFileDir = Environment
+            .getExternalStorageDirectory()
+            .getAbsolutePath()
+            + File.separator
+            + "FileDownloader";
     private ListView listView;
     private Button sendbtn, imagebtn, voidbtn, yuyinbtn;
     private EditText editText;
@@ -81,10 +94,12 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         //收到消息监听
         EMClient.getInstance().chatManager().addMessageListener(this);
         // EMClient.getInstance().chatManager().addMessageListener(msgListener);
+        //注册广播接收器
         IntentFilter callFilter = new IntentFilter(EMClient.getInstance().callManager().getIncomingCallBroadcastAction());
-         registerReceiver(new CallReceiver(), callFilter);
+                registerReceiver(new CallReceiver(), callFilter);
         initView();
-
+        //下载监听
+        FileDownloader.registerDownloadStatusListener(this);
         setListViewAdapter();
         setActionBar();
 
@@ -95,6 +110,8 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
     protected void onDestroy() {
         super.onDestroy();
         EMClient.getInstance().chatManager().removeMessageListener(this);
+        // 取消下载监听
+        FileDownloader.unregisterDownloadStatusListener(this);
     }
 
     /**
@@ -353,50 +370,42 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
 
     }
 
-    //成功
-    @Override
-    public void onSuccess() {
-        Log.e("onSuccess", "成功xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    }
-
-    //失败
-    @Override
-    public void onError(int i, String s) {
-        Log.e("OnError", "失败xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx = " + i + "　　" + s);
-    }
-
-    @Override
-    public void onProgress(int i, String s) {
-
-    }
-
     @Override
     public void onMessageReceived(List<EMMessage> list) {
         Log.e("onMessageReceived", "收到消息" + list);
         this.list.addAll(list);
         mesageAdapter.upData(this.list);
+        // 修改过 本地缩略图路径的 视频消息集合
+        ArrayList<EMMessage> list1 = new ArrayList<>();
+        for (EMMessage msg:list){
+            switch (msg.getType()){
+                case VIDEO:
+                  EMVideoMessageBody text1= (EMVideoMessageBody) msg.getBody();
+                    String name = System.currentTimeMillis() + "/" + ".jpg";
+                    FileDownloader.createAndStart(text1.getThumbnailUrl(),newFileDir,name);
+
+                    // 把本地路径设置给消息体
+                    text1.setLocalThumb(newFileDir + "/" + name);
+                    // 把消息体添加到 消息对象中
+                    msg.addBody(text1);
+                    // 把修改过的消息对象添加到集合中
+                    list1.add(msg);
+                    // 处理过的消息添加到数据源
+                    this.list.add(msg);
+                    break;
+                default:
+                    // 添加到数据源
+                    this.list.add(msg);
+                    break;
+            }
+            // 把消息导入到数据库
+            EMClient.getInstance().chatManager().importMessages(list1);
+            // 刷新listview
+            mesageAdapter.notifyDataSetChanged();
+            Log.e("onMessageReceived", "onMessageReceived" + list.size());
+        }
     }
 
-    @Override
-    public void onCmdMessageReceived(List<EMMessage> list) {
-
-    }
-
-    @Override
-    public void onMessageReadAckReceived(List<EMMessage> list) {
-
-    }
-
-    @Override
-    public void onMessageDeliveryAckReceived(List<EMMessage> list) {
-
-    }
-
-
-    @Override
-    public void onMessageChanged(EMMessage emMessage, Object o) {
-
-    }
 
     @Override
     public void onClick(View v) {
@@ -451,17 +460,42 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         switch (requestCode) {
             case 106:
                 if (resultCode == RESULT_OK) {
-                    EMMessage videoSendMessage = EMMessage.createVideoSendMessage(
-                            getPath(data.getData()),//视频路径
-                            Environment
-                                    .getExternalStorageDirectory()
-                                    .getAbsolutePath() + "/" +"1492410131453.jpg"                   //视频预览路径
-                            , 5000                //视频时长
-                            , urseName);//用户名
-                    sendMessage(videoSendMessage);
+                    setVoide(data);
                 }
                 break;
         }
+    }
+
+    private void setVoide(Intent data) {
+        //获取文件路径
+        String path = getPath(data.getData());
+        //实例化媒体播放类
+        MediaPlayer me=new MediaPlayer();
+        try {
+
+            me.setDataSource(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //获取视频的时长
+        int duration = me.getDuration();
+        Log.e("视频时长","duration="+duration);
+        //实例化获取帧数据
+        MediaMetadataRetriever mediaMetadataRetriever=new MediaMetadataRetriever();
+        //设置数据源
+        mediaMetadataRetriever.setDataSource(path);
+        //获取某一针图像
+        Bitmap frameAtTime = mediaMetadataRetriever.getFrameAtTime(1000);
+        File f = pictureFragment.creatBitMap(frameAtTime);
+        //释放资源
+        mediaMetadataRetriever.release();
+        me.release();
+        EMMessage videoSendMessage = EMMessage.createVideoSendMessage(
+                path ,//视频路径
+                f.getAbsolutePath()   //视频预览路径
+                , duration                //视频时长
+                , urseName);//用户名
+        sendMessage(videoSendMessage);
     }
 
     /**
@@ -482,7 +516,18 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         //返回根据字段下标获取数据
         return cursor.getString(column_index);
     }
+    /**
+     * 语音通话
+     */
+    private void voicecall() {
 
+        try {//单参数
+            EMClient.getInstance().callManager().makeVoiceCall(urseName);
+        } catch (EMServiceNotReadyException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     /**
      * 返回键
      */
@@ -493,6 +538,43 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         intent.putExtra("text", text);
         setResult(RESULT_OK, intent);
         super.onBackPressed();
+    }
+
+    //成功
+    @Override
+    public void onSuccess() {
+        Log.e("onSuccess", "成功xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    }
+
+    //失败
+    @Override
+    public void onError(int i, String s) {
+        Log.e("OnError", "失败xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx = " + i + "　　" + s);
+    }
+
+    @Override
+    public void onProgress(int i, String s) {
+
+    }
+    @Override
+    public void onCmdMessageReceived(List<EMMessage> list) {
+
+    }
+
+    @Override
+    public void onMessageReadAckReceived(List<EMMessage> list) {
+
+    }
+
+
+    @Override
+    public void onMessageDeliveryAckReceived(List<EMMessage> list) {
+
+    }
+
+    @Override
+    public void onMessageChanged(EMMessage emMessage, Object o) {
+
     }
 
     @Override
@@ -515,17 +597,45 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         text = s.toString();
     }
 
-    /**
-     * 语音通话
-     */
-    private void voicecall() {
 
-        try {//单参数
-            EMClient.getInstance().callManager().makeVoiceCall(urseName);
-        } catch (EMServiceNotReadyException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
+    @Override
+    public void onFileDownloadStatusWaiting(DownloadFileInfo downloadFileInfo) {
+        
+    }
+
+    @Override
+    public void onFileDownloadStatusPreparing(DownloadFileInfo downloadFileInfo) {
+
+    }
+
+    @Override
+    public void onFileDownloadStatusPrepared(DownloadFileInfo downloadFileInfo) {
+
+    }
+
+    @Override
+    public void onFileDownloadStatusDownloading(DownloadFileInfo downloadFileInfo, float downloadSpeed, long remainingTime) {
+
+    }
+
+    @Override
+    public void onFileDownloadStatusPaused(DownloadFileInfo downloadFileInfo) {
+
+    }
+
+    @Override
+    public void onFileDownloadStatusCompleted(DownloadFileInfo downloadFileInfo) {
+        list.clear();
+//        //获取此会话的所有消息
+//        list = (ArrayList<EMMessage>) conversation.getAllMessages();
+
+        mesageAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFileDownloadStatusFailed(String url, DownloadFileInfo downloadFileInfo, FileDownloadStatusFailReason failReason) {
+
     }
 
     /**

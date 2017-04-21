@@ -31,6 +31,8 @@ import com.hyphenate.chat.EMMessageBody;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.chat.EMVideoMessageBody;
 
+import org.wlf.filedownloader.FileDownloader;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -213,6 +215,9 @@ public class PrivateMessageAdapter extends BaseAdapter {
                     .override(300, 200)
                     .into(viewHolder.rightVoid);
         } else {
+
+
+
             viewHolder.rightLoy.setVisibility(View.GONE);
             viewHolder.liftLoy.setVisibility(View.VISIBLE);
             viewHolder.leftMessage.setVisibility(View.GONE);
@@ -220,7 +225,6 @@ public class PrivateMessageAdapter extends BaseAdapter {
             viewHolder.leftVoid.setVisibility(View.VISIBLE);
             //设置谁给我发送的用户名
             viewHolder.leftName.setText(emMessage.getUserName());
-            //
             //    EMImageMessageBody text = (EMImageMessageBody) emMessage.getBody();
             //设置我接收到的图片
             Glide.with(context)
