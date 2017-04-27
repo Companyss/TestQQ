@@ -55,17 +55,22 @@
            android:layout_weight="1" />
 
         <Button
-            android:id="@+id/private_message_yuyin_btn"
+            android:id="@+id/private_message_expression_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="语音"
+            android:text="表情"
             android:layout_weight="1"/>
     </LinearLayout>
   <FrameLayout
       android:id="@+id/a"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-
+      android:layout_height="wrap_content"
+      android:visibility="gone">
   </FrameLayout>
+    <FrameLayout
+        android:id="@+id/aq"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+    </FrameLayout>
 </LinearLayout>

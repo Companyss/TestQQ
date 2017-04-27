@@ -1,5 +1,6 @@
 package com.example.testqq.activity;
 
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,14 +9,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,16 +26,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.testqq.R;
 import com.example.testqq.adapter.PrivateMessageAdapter;
 
+import com.example.testqq.fragment.ExpressionFragment;
 import com.example.testqq.fragment.InformationFragment;
 import com.example.testqq.fragment.PictureFragment;
 import com.hyphenate.EMCallBack;
@@ -73,7 +70,7 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
             + File.separator
             + "FileDownloader";
     private ListView listView;
-    private Button sendbtn, imagebtn, voidbtn, yuyinbtn;
+    private Button sendbtn, imagebtn, voidbtn,expressionbtn;
     private EditText editText;
     private List<EMMessage> list;
     private String urseName;
@@ -84,9 +81,10 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
     private String text;
     private EMMessage imageSendMessage;
     private PictureFragment pictureFragment;
+    private ExpressionFragment expressionFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-
+    private FrameLayout a,aa;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,10 +120,13 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         sendbtn = (Button) findViewById(R.id.private_message_sendbtn);
         imagebtn = (Button) findViewById(R.id.private_message_image_btn);
         voidbtn = (Button) findViewById(R.id.private_message_void_btn);
-        yuyinbtn = (Button) findViewById(R.id.private_message_yuyin_btn);
+        expressionbtn = (Button) findViewById(R.id.private_message_expression_btn);
         editText = (EditText) findViewById(R.id.private_message_edtext);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.private_message_swipe_refresh_layout);
-        pictureFragment = new PictureFragment();
+       a= (FrameLayout) findViewById(R.id.a);
+        aa= (FrameLayout) findViewById(R.id.aq);
+       pictureFragment = new PictureFragment();
+        expressionFragment=new ExpressionFragment();
         fragmentManager = getSupportFragmentManager();
         //获取用户名
         urseName = getIntent().getStringExtra("ursename");
@@ -142,6 +143,7 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         imagebtn.setOnClickListener(this);
         sendbtn.setOnClickListener(this);
         voidbtn.setOnClickListener(this);
+        expressionbtn.setOnClickListener(this);
         editText.setText(text);
         data();
     }
@@ -339,7 +341,16 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
                         "message_bottom_fragment"
                         , FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
-
+    private void closeexpressionFragment() {
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(expressionFragment);
+        fragmentTransaction.commit();
+        //从fragment的返回棧中移除fragment
+        fragmentManager
+                .popBackStackImmediate(
+                        "message_expression_fragment"
+                        , FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
     /**
      * 返回数据
      * 对话数据源
@@ -405,7 +416,7 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
             Log.e("onMessageReceived", "onMessageReceived" + list.size());
         }
     }
-
+//
 
     @Override
     public void onClick(View v) {
@@ -424,6 +435,8 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
                 editText.setText("");
                 break;
             case R.id.private_message_image_btn:
+                  a.setVisibility(View.VISIBLE);
+                  aa.setVisibility(View.GONE);
                 if (pictureFragment.isAdded()) {
                     closeImgFragment();
                 } else {
@@ -434,6 +447,18 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
             case R.id.private_message_void_btn:
                 sendVoid();
                 break;
+            case R.id.private_message_expression_btn:
+                a.setVisibility(View.GONE);
+                aa.setVisibility(View.VISIBLE);
+                if (expressionFragment.isAdded()){
+                    closeexpressionFragment();
+                }else {
+
+                    openexpressionFragment();
+                }
+             //   toastShow(this,"点了");
+                break;
+
         }
     }
 
@@ -448,7 +473,13 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         fragmentTransaction.addToBackStack("message_bottom_fragment");
         fragmentTransaction.commit();
     }
-
+    private void openexpressionFragment() {
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.aq, expressionFragment);
+        fragmentTransaction.addToBackStack("message_expression_fragment");
+        fragmentTransaction.commit();
+        toastShow(this,"点了");
+    }
     /**
      * @param requestCode
      * @param resultCode
@@ -539,7 +570,11 @@ public class PrivateMessageActivity extends BaseActivity implements EMCallBack, 
         setResult(RESULT_OK, intent);
         super.onBackPressed();
     }
+    public void getEdit(String s){
+        String edtext = getEdtext(editText);
+        editText.setText(edtext+s);
 
+    }
     //成功
     @Override
     public void onSuccess() {

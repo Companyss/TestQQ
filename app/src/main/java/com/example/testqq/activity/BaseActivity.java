@@ -31,7 +31,7 @@ public class BaseActivity extends AppCompatActivity {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-//                Toast.makeText(activity,message,Toast.LENGTH_SHORT).show();
+               Toast.makeText(activity,message,Toast.LENGTH_SHORT).show();
             }
         });
     }

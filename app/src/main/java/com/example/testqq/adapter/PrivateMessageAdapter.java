@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +25,7 @@ import com.example.testqq.R;
 import com.example.testqq.activity.BaseActivity;
 import com.example.testqq.activity.PictureActivity;
 import com.example.testqq.activity.VideoActivity;
+import com.example.testqq.vules.Image;
 import com.example.testqq.vules.SPUtils;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
@@ -37,6 +42,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by 宋宝春 on 2017/3/27.
@@ -110,7 +117,7 @@ public class PrivateMessageAdapter extends BaseAdapter {
     }
 
     //设置文本
-    private void setText(ViewHorder viewHolder, EMMessage emMessage) {
+    private void   setText(ViewHorder viewHolder, EMMessage emMessage) {
         if (getname().equals(emMessage.getFrom())) {
             //设置rightloy是否可见
             viewHolder.rightLoy.setVisibility(View.VISIBLE);
@@ -122,8 +129,29 @@ public class PrivateMessageAdapter extends BaseAdapter {
             viewHolder.rightName.setText(getname());
             //
             EMTextMessageBody text = (EMTextMessageBody) emMessage.getBody();
+            String message = text.getMessage();
+            SpannableString spannableString=new SpannableString(message);
+            String str="\\[[^\\]]+\\]";
+            Pattern compile = Pattern.compile(str, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = compile.matcher(spannableString);
+            while (matcher.find()){
+                String group = matcher.group();
+                int start = matcher.start();
+                int i = start + group.length();
+                try {
+                    if (Image.getImae(group)==0){
+                        continue;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                spannableString.setSpan(new ImageSpan(context,Image.getImae(group)),
+                        start,i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             //设置我发送的内容
-            viewHolder.rightMessage.setText(text.getMessage());
+            viewHolder.rightMessage.setText(spannableString);
+            viewHolder.rightMessage.setMovementMethod(LinkMovementMethod.getInstance());
         } else {
             viewHolder.rightLoy.setVisibility(View.GONE);
             viewHolder.liftLoy.setVisibility(View.VISIBLE);

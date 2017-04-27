@@ -5,5 +5,5 @@ package com.example.testqq.interfach;
  */
 
 public interface SendListener {
-    void Up();
+   void setItemOnclistener(int i);
 }
